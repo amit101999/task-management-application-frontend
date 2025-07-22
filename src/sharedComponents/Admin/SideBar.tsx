@@ -5,7 +5,6 @@ import {
   CheckSquare, 
   Users, 
   Settings,
-  MoreVertical,
 } from 'lucide-react';
 
 const SideBar = () => {
@@ -14,8 +13,8 @@ const SideBar = () => {
     { icon: Home, label: 'Dashboard', active: true , redirect :"/" },
     { icon: FolderOpen, label: 'Projects', active: false , redirect :"/projects" },
     { icon: CheckSquare, label: 'Tasks', active: false , redirect :"/tasks" },
-    { icon: Users, label: 'Members', active: false , redirect :"/users" },
-    { icon: Settings, label: 'Settings', active: false , redirect :"/settings" }
+    { icon: Users, label: 'Members', active: false , redirect :"/members" },
+    { icon: Settings, label: 'Profile', active: false , redirect :"/profile" }
   ];
 
   return (
@@ -49,22 +48,6 @@ const SideBar = () => {
             </Link>
           ))}
         </nav>
-
-        {/* User Profile */}
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center">
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt="Profile"
-              className="w-10 h-10 rounded-full"
-            />
-            <div className="ml-3 flex-1">
-              <p className="text-sm font-medium text-gray-900">John Doe</p>
-              <p className="text-xs text-gray-500">Administrator</p>
-            </div>
-            <MoreVertical className="w-4 h-4 text-gray-400" />
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -1,35 +1,16 @@
 import React, { useState } from "react";
 import {
   CheckSquare,
-  Bell,
-  Search,
   Plus,
-  X,
   Calendar,
-  FileText,
   ChevronDown,
   AlertCircle,
 } from "lucide-react";
-import SideBar from "../sharedComponents/SideBar";
+import SideBar from "../../sharedComponents/Admin/SideBar";
+import Header from "../../sharedComponents/Admin/Header";
+import CreateTask from "./CreateTask";
 
-interface Task {
-  id: string;
-  title: string;
-  assignedUsers: { id: string; name: string; avatar: string }[];
-  status: "To-do" | "In-progress" | "Done";
-  dueDate: string;
-  projectId: string;
-  projectName: string;
-  priority: "High" | "Medium" | "Low";
-  description: string;
-}
 
-interface Member {
-  id: string;
-  name: string;
-  avatar: string;
-  role: string;
-}
 
 const TasksPage: React.FC = () => {
   const [activeStatusFilter, setActiveStatusFilter] = useState<
@@ -78,7 +59,8 @@ const TasksPage: React.FC = () => {
     },
   ];
 
-  const projects = [
+
+  const projects : projectType[] = [
     { id: "1", name: "Mobile App Redesign" },
     { id: "2", name: "Website Overhaul" },
     { id: "3", name: "Database Migration" },
@@ -109,72 +91,7 @@ const TasksPage: React.FC = () => {
       priority: "High",
       description: "Build secure login endpoint with JWT authentication",
     },
-    {
-      id: "3",
-      title: "Database schema optimization",
-      assignedUsers: [members[1]],
-      status: "Done",
-      dueDate: "2024-07-15",
-      projectId: "3",
-      projectName: "Database Migration",
-      priority: "Medium",
-      description: "Optimize database queries and indexes",
-    },
-    {
-      id: "4",
-      title: "User testing sessions",
-      assignedUsers: [members[2], members[4]],
-      status: "To-do",
-      dueDate: "2024-07-30",
-      projectId: "2",
-      projectName: "Website Overhaul",
-      priority: "Medium",
-      description: "Conduct user testing for new website features",
-    },
-    {
-      id: "5",
-      title: "Mobile responsive design",
-      assignedUsers: [members[0]],
-      status: "In-progress",
-      dueDate: "2024-07-22",
-      projectId: "2",
-      projectName: "Website Overhaul",
-      priority: "High",
-      description: "Ensure website is fully responsive on mobile devices",
-    },
-    {
-      id: "6",
-      title: "API documentation writing",
-      assignedUsers: [members[3]],
-      status: "To-do",
-      dueDate: "2024-08-05",
-      projectId: "5",
-      projectName: "API Documentation",
-      priority: "Low",
-      description: "Write comprehensive API documentation",
-    },
-    {
-      id: "7",
-      title: "Security vulnerability assessment",
-      assignedUsers: [members[1], members[4]],
-      status: "Done",
-      dueDate: "2024-07-10",
-      projectId: "3",
-      projectName: "Database Migration",
-      priority: "High",
-      description: "Assess and fix security vulnerabilities",
-    },
-    {
-      id: "8",
-      title: "Customer portal wireframes",
-      assignedUsers: [members[0], members[2]],
-      status: "In-progress",
-      dueDate: "2024-07-28",
-      projectId: "4",
-      projectName: "Customer Portal",
-      priority: "Medium",
-      description: "Create wireframes for customer self-service portal",
-    },
+   
   ];
 
   const getStatusColor = (status: string) => {
@@ -234,46 +151,7 @@ const TasksPage: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
-          <div className="flex items-center flex-1">
-            <h1 className="text-2xl font-semibold text-gray-900">Tasks</h1>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            {/* Search */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search tasks..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
-              />
-            </div>
-
-            {/* Notifications */}
-            <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-            </button>
-
-            {/* Profile */}
-            <div className="flex items-center space-x-3">
-              <img
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="Profile"
-                className="w-8 h-8 rounded-full"
-              />
-              <span className="text-sm font-medium text-gray-900">
-                John Doe
-              </span>
-              <button className="text-sm text-gray-500 hover:text-gray-700">
-                Logout
-              </button>
-            </div>
-          </div>
-        </header>
+        <Header />
 
         {/* Tasks Content */}
         <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
@@ -496,145 +374,7 @@ const TasksPage: React.FC = () => {
 
       {/* Create Task Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full mx-4">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Create New Task
-              </h3>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-6 space-y-4">
-              {/* Task Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Task Title
-                </label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Enter task title..."
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Enter task description..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                />
-              </div>
-
-              {/* Project Selection */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Project
-                </label>
-                <div className="relative">
-                  <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
-                    <option value="">Select project...</option>
-                    {projects.map((project) => (
-                      <option key={project.id} value={project.id}>
-                        {project.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Assign Members */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Assign To
-                </label>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {members.map((member) => (
-                    <label
-                      key={member.id}
-                      className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <img
-                        src={member.avatar}
-                        alt={member.name}
-                        className="w-8 h-8 rounded-full"
-                      />
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
-                          {member.name}
-                        </p>
-                        <p className="text-xs text-gray-500">{member.role}</p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Due Date and Priority */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Due Date
-                  </label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="date"
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Priority
-                  </label>
-                  <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">Select priority...</option>
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200">
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-              >
-                Create Task
-              </button>
-            </div>
-          </div>
-        </div>
+       <CreateTask members={members} projects={projects} setShowCreateModal={setShowCreateModal} />
       )}
     </div>
   );
