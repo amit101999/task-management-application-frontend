@@ -24,15 +24,15 @@ const TasksPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { users } = useSelector((state: RootState) => state.user);
   const { projects } = useSelector((state: RootState) => state.projects);
+  // const { tasks } = userS
 
   const tasks: Task[] = [
     {
       id: "1",
       title: "Design user authentication flow",
-      assignedUsers: [{id : "1" , name: "amit" , email:"amit@gmil.com" , avatar:"ass" , role:"admin" }],
+      assignedUser: "AMIT",
       status: "INPROGRESS",
       dueDate: "2024-07-20",
-      projectId: "1",
       projectName: "Mobile App Redesign",
       priority: "High",
       description: "Create wireframes and mockups for user authentication",
@@ -71,10 +71,9 @@ const TasksPage: React.FC = () => {
     const matchesStatus =
       activeStatusFilter === "All" || task.status === activeStatusFilter;
     const matchesMember =
-      activeMemberFilter === "All" ||
-      task.assignedUsers.some((user) => user.id === activeMemberFilter);
+      activeMemberFilter === "All" 
     const matchesProject =
-      activeProjectFilter === "All" || task.projectId === activeProjectFilter;
+      activeProjectFilter === "All" 
     const matchesSearch = task.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());

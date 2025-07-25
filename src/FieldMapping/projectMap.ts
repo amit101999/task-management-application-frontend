@@ -8,6 +8,7 @@ export const formatproject = (projects : any) : ProjectType[] => {
         status: project.completedTasks > 0 ? 'Completed' : 'Active',
         dueDate: project.dueDate,
         teamMembers: project.users,
+        tasks: project.tasks,
         totalTasks: project.tasks.length,
         completedTasks: project.completed_task
       }));
@@ -20,6 +21,7 @@ export const signleProjectFormat = (project : any) : ProjectType => ({
     progress: project.tasks.length > 0 ? (project.completed_task / project.tasks.length) * 100 : 0,
     status: project.completedTasks > 0 ? 'Completed' : 'Active',
     dueDate: project.dueDate,
+    tasks: project.tasks,
     teamMembers: project.users,
     totalTasks: project.tasks.length,
     completedTasks: project.completed_task

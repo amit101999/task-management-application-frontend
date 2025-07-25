@@ -24,12 +24,13 @@ const ProjectsPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const dispatch = useDispatch()
    const {projects} = useSelector((store : RootState ) => store.projects) 
+   console.log(projects)
 
     useEffect(()=>{
       const fetechProjects = async () => {
           const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/project/getAllProject` , {withCredentials : true} )
           const data : ProjectType[] = formatproject(res.data.data)
-          
+          // console.log(res.data.data)
           dispatch(getAllProject(data))
       }
       fetechProjects()
@@ -172,7 +173,7 @@ const ProjectsPage = () => {
                     <div className="col-span-2">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Users className="w-4 h-4" />
-                        <span>{project.teamMembers} members</span>
+                        <span>{project.teamMembers.length} members</span>
                       </div>
                     </div>
 

@@ -1,33 +1,13 @@
 import { Calendar, CheckCircle, Circle, Clock, Filter, Search, User } from 'lucide-react'
 import React from 'react'
 
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  progress: number;
-  status: 'Active' | 'Completed' | 'On Hold';
-  dueDate: string;
-  teamMembers: string[];
-  totalTasks: number;
-  completedTasks: number;
-}
 
 interface PropType{
     getProjectTasks : (projectId : string) => any
-    selectedProject : Project
+    selectedProject : ProjectType
 }
 
-interface Task {
-  id: string;
-  title: string;
-  status: 'Todo' | 'In Progress' | 'Done';
-  dueDate: string;
-  project: string;
-  projectId: string;
-  assignee?: string;
-  priority?: 'Low' | 'Medium' | 'High';
-}
+
 const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
 
   const getStatusBadge = (status: string) => {
@@ -119,7 +99,7 @@ const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
                                 </span>
                                 <span className="flex items-center">
                                   <User className="w-4 h-4 mr-1" />
-                                  {task.assignee}
+                                  {task.id}
                                 </span>
                               </div>
                               
@@ -129,7 +109,7 @@ const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
                                 </span>
                                 
                                 <div className="flex space-x-2">
-                                  {task.status !== 'Done' && (
+                                  {task.status !== 'COLSED' && (
                                     <button className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
                                       Mark Complete
                                     </button>

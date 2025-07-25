@@ -40,7 +40,8 @@ interface UserType {
   progress: number;
   status: 'Active' | 'Completed' | 'On Hold';
   dueDate: string;
-  teamMembers: string[];
+  teamMembers: UserType[];
+  tasks: Task[];
   totalTasks: number;
   completedTasks: number;
 }
@@ -48,10 +49,9 @@ interface UserType {
 interface Task {
   id: string
   title: string;
-  assignedUsers: UserType[]
+  assignedUser: string
   status: "OPEN" | "INPROGRESS" | "COLSED";
   dueDate: string;
-  projectId: string;
   projectName: string;
   priority: "High" | "Medium" | "Low";
   description: string;
