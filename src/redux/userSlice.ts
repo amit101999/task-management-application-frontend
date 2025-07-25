@@ -1,12 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthType {
+  users : UserType[] ;
   user: UserType | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: AuthType = {
+  // Array of users
+  users:[],
+  // single user
   user: null,
   loading: false,
   error: null,
@@ -16,6 +20,9 @@ export const userSlice = createSlice({
   name: "user ",
   initialState,
   reducers: {
+    loaduser : (state , action : PayloadAction<UserType[]>) => {
+        state.users = action.payload
+    },
     loginStart(state) {
       state.user = null;
       state.loading = true;
@@ -39,5 +46,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { loginFailure, loginStart, loginSuccess, logoutUser, } = userSlice.actions;
+export const { loginFailure, loginStart, loginSuccess, logoutUser,loaduser } = userSlice.actions;
 export default userSlice.reducer;

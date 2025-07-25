@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   FolderOpen,  
   Users, 
@@ -11,69 +11,30 @@ import {
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
 import CreateProject from './CreateProject';
+import { useDispatch } from 'react-redux';
+import { getAllProject } from '../../redux/projectSlice';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
+import { formatproject } from '../../FieldMapping/projectMap';
 
 
-const ProjectsPage: React.FC = () => {
+const ProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState<'All' | 'Active' | 'Completed' | 'Upcoming'>('All');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const dispatch = useDispatch()
+   const {projects} = useSelector((store : RootState ) => store.projects) 
 
-  const projects: Project[] = [
-    {
-      id: '1',
-      title: 'Mobile App Redesign',
-      status: 'Active',
-      dueDate: '2024-08-15',
-      assignedMembers: 6,
-      description: 'Complete redesign of the mobile application with new UI/UX',
-      priority: 'High'
-    },
-    {
-      id: '2',
-      title: 'Website Overhaul',
-      status: 'Active',
-      dueDate: '2024-09-01',
-      assignedMembers: 4,
-      description: 'Modernize the company website with new features',
-      priority: 'Medium'
-    },
-    {
-      id: '3',
-      title: 'Database Migration',
-      status: 'Completed',
-      dueDate: '2024-07-01',
-      assignedMembers: 3,
-      description: 'Migrate legacy database to new infrastructure',
-      priority: 'High'
-    },
-    {
-      id: '4',
-      title: 'Customer Portal',
-      status: 'Upcoming',
-      dueDate: '2024-10-15',
-      assignedMembers: 5,
-      description: 'Build customer self-service portal',
-      priority: 'Medium'
-    },
-    {
-      id: '5',
-      title: 'API Documentation',
-      status: 'Active',
-      dueDate: '2024-08-30',
-      assignedMembers: 2,
-      description: 'Create comprehensive API documentation',
-      priority: 'Low'
-    },
-    {
-      id: '6',
-      title: 'Security Audit',
-      status: 'Completed',
-      dueDate: '2024-06-20',
-      assignedMembers: 4,
-      description: 'Complete security audit and vulnerability assessment',
-      priority: 'High'
-    }
-  ];
+    useEffect(()=>{
+      const fetechProjects = async () => {
+          const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/project/getAllProject` , {withCredentials : true} )
+          const data : ProjectType[] = formatproject(res.data.data)
+          
+          dispatch(getAllProject(data))
+      }
+      fetechProjects()
+  },[])
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -101,18 +62,18 @@ const ProjectsPage: React.FC = () => {
     }
   };
 
-  const filteredProjects = projects.filter(project => {
-    const matchesFilter = activeFilter === 'All' || project.status === activeFilter;
-    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  // const filteredProjects = projects.filter(project => {
+  //   const matchesFilter = activeFilter === 'All' || project.status === activeFilter;
+  //   const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase());
+  //   return matchesFilter && matchesSearch;
+  // });
 
-  const filterCounts = {
-    All: projects.length,
-    Active: projects.filter(p => p.status === 'Active').length,
-    Completed: projects.filter(p => p.status === 'Completed').length,
-    Upcoming: projects.filter(p => p.status === 'Upcoming').length
-  };
+  // const filterCounts = {
+  //   All: projects.length,
+  //   Active: projects.filter(p => p.status === 'Active').length,
+  //   Completed: projects.filter(p => p.status === 'Completed').length,
+  //   Upcoming: projects.filter(p => p.status === 'Upcoming').length
+  // };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -154,7 +115,6 @@ const ProjectsPage: React.FC = () => {
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
-                  {filter} ({filterCounts[filter]})
                 </button>
               ))}
             </div>
@@ -175,7 +135,7 @@ const ProjectsPage: React.FC = () => {
 
             {/* Table Body */}
             <div className="divide-y divide-gray-200">
-              {filteredProjects.map((project) => (
+              {projects.map((project) => (
                 <div key={project.id} className="px-6 py-4 hover:bg-gray-50 transition-colors">
                   <div className="grid grid-cols-12 gap-4 items-center">
                     {/* Project Info */}
@@ -185,7 +145,7 @@ const ProjectsPage: React.FC = () => {
                           <FolderOpen className="w-5 h-5 text-blue-600" />
                         </div>
                         <div>
-                          <h3 className="font-medium text-gray-900">{project.title}</h3>
+                          <h3 className="font-medium text-gray-900">{project.name}</h3>
                           <p className="text-sm text-gray-500 truncate max-w-xs">{project.description}</p>
                         </div>
                       </div>
@@ -196,9 +156,6 @@ const ProjectsPage: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
                           {project.status}
-                        </span>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(project.priority)}`}>
-                          {project.priority}
                         </span>
                       </div>
                     </div>
@@ -215,7 +172,7 @@ const ProjectsPage: React.FC = () => {
                     <div className="col-span-2">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <Users className="w-4 h-4" />
-                        <span>{project.assignedMembers} members</span>
+                        <span>{project.teamMembers} members</span>
                       </div>
                     </div>
 
@@ -239,7 +196,7 @@ const ProjectsPage: React.FC = () => {
             </div>
 
             {/* Empty State */}
-            {filteredProjects.length === 0 && (
+            {projects.length === 0 && (
               <div className="text-center py-12">
                 <FolderOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">No projects found matching your criteria</p>

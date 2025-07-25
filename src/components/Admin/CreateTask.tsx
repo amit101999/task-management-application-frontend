@@ -1,18 +1,36 @@
 import { Calendar, ChevronDown, FileText, X } from 'lucide-react'
-
-interface project{
-    id : string
-    title : string
-    name : string
-}
+import { useState } from 'react'
 
 interface propType {
     setShowCreateModal : (string : boolean)=> void
-    members : Member[]
-    projects : projectType[]
+    users : UserType[]
+    projects : ProjectType[]
 
 }
-const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
+const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
+
+    // hook to create new task;
+    const [taskData , setTaskData] = useState({
+        title : "" , 
+        description : "" , 
+        dueDate : "" , 
+        assignedUsers : "" , 
+        status : "INPROGRESS" , 
+        projectId : "",
+        projectName : "",
+        priority : "Medium",
+  
+    })
+
+    const handleChange = (e : any)=>{
+      setTaskData((prev) => ({...prev , [e.target.name] : e.target.value}))
+    }
+
+    const handleSubmit = () =>{
+      setShowCreateModal(false)
+      console.log(taskData)
+    }
+
   return (
      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full">
@@ -40,6 +58,9 @@ const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
                   <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
+                    name='title'
+                    value={taskData.title}
+                    onChange={handleChange}
                     placeholder="Enter task title..."
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -52,6 +73,9 @@ const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
                   Description
                 </label>
                 <textarea
+                 name='description'
+                    value={taskData.description}
+                    onChange={handleChange}
                   rows={3}
                   placeholder="Enter task description..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -64,10 +88,10 @@ const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
                   Project
                 </label>
                 <div className="relative">
-                  <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                  <select name='projectId'  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
                     <option value="">Select project...</option>
                     {projects.map((project) => (
-                      <option key={project.id} value={project.id}>
+                      <option key={project.id} value={project.id} onChange={ (e)=> setTaskData((prev) => ({...prev , projectId : project.id , projectName : project.name})) }>
                         {project.name}
                       </option>
                     ))}
@@ -82,7 +106,7 @@ const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
                   Assign To
                 </label>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {members.map((member) => (
+                  {users.map((member) => (
                     <label
                       key={member.id}
                       className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
@@ -145,7 +169,8 @@ const CreateTask = ({setShowCreateModal ,members , projects } : propType) => {
                 Cancel
               </button>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={handleSubmit}
+            
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 Create Task

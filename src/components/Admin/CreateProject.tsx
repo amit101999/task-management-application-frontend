@@ -1,9 +1,39 @@
+import axios from 'axios'
 import { Calendar, FileText, X } from 'lucide-react'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { addProject } from '../../redux/projectSlice'
+import {  signleProjectFormat } from '../../FieldMapping/projectMap'
 
 interface propType {
     setShowCreateModal : (string : boolean)=> void
 }
 const CreateProject = ({setShowCreateModal } : propType) => {
+  const [projectDetail , setProjectDetail] = useState({
+    projectName : '',
+    description:'',
+    endDate : ''
+  })
+  const dispatch = useDispatch()
+
+  const handleChange = (e : any) => {
+    setProjectDetail((prev) => ({...prev , [e.target.name] : e.target.value}))
+  }
+
+  const handleSubmit =async () : Promise<void>=>{
+       setShowCreateModal(false)
+       
+       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/project/createProject`, projectDetail , {
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        withCredentials : true
+       } , 
+       )
+       const data : ProjectType = signleProjectFormat(response.data.data)
+       dispatch(addProject(data))
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
@@ -29,6 +59,9 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                   <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
+                    name='projectName'
+                    value={projectDetail.projectName}
+                    onChange={handleChange}
                     placeholder="Enter project name..."
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -41,6 +74,10 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                   Description
                 </label>
                 <textarea
+                    name='description'
+                    value={projectDetail.description}
+                    onChange={handleChange}
+                  cols={30}
                   rows={3}
                   placeholder="Enter project description..."
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -56,13 +93,16 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
+                    name='endDate'
+                    value={projectDetail.endDate}
+                    onChange={handleChange}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
-              </div>
+              </div>  
 
               {/* Priority */}
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Priority
                 </label>
@@ -72,7 +112,7 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                   <option value="Medium">Medium</option>
                   <option value="High">High</option>
                 </select>
-              </div>
+              </div> */}
             </div>
 
             {/* Modal Footer */}
@@ -84,7 +124,8 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                 Cancel
               </button>
               <button
-                onClick={() => setShowCreateModal(false)}
+                onClick={handleSubmit}
+                
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 Create Project

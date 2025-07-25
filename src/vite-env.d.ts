@@ -28,10 +28,10 @@ interface UserType {
 
 
 
- interface projectType {
-    id : string,
-    name : String
-  }
+//  interface projectType {
+//     id : string,
+//     name : String
+//   }
 
   interface ProjectType {
   id: string;
@@ -46,15 +46,16 @@ interface UserType {
 }
 
 interface Task {
-  id: string;
+  id: string
   title: string;
-  assignedUsers: { id: string; name: string; avatar: string }[];
-  status: "To-do" | "In-progress" | "Done";
+  assignedUsers: UserType[]
+  status: "OPEN" | "INPROGRESS" | "COLSED";
   dueDate: string;
   projectId: string;
   projectName: string;
   priority: "High" | "Medium" | "Low";
   description: string;
+  startDate? : string
 }
 
 interface Project {

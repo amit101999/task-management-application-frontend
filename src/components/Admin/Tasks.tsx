@@ -9,98 +9,45 @@ import {
 import SideBar from "../../sharedComponents/Admin/SideBar";
 import Header from "../../sharedComponents/Admin/Header";
 import CreateTask from "./CreateTask";
+import type { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
 
 
 
 const TasksPage: React.FC = () => {
   const [activeStatusFilter, setActiveStatusFilter] = useState<
-    "All" | "To-do" | "In-progress" | "Done"
+    "All" | "OPEN" | "INPROGRESS" | "CLOSED"
   >("All");
   const [activeMemberFilter, setActiveMemberFilter] = useState<string>("All");
   const [activeProjectFilter, setActiveProjectFilter] = useState<string>("All");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const members: Member[] = [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      avatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b9a5a2cc?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      role: "Designer",
-    },
-    {
-      id: "2",
-      name: "Mike Chen",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      role: "Developer",
-    },
-    {
-      id: "3",
-      name: "Emily Davis",
-      avatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      role: "Project Manager",
-    },
-    {
-      id: "4",
-      name: "Alex Rodriguez",
-      avatar:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      role: "Developer",
-    },
-    {
-      id: "5",
-      name: "Lisa Park",
-      avatar:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      role: "QA Engineer",
-    },
-  ];
-
-
-  const projects : projectType[] = [
-    { id: "1", name: "Mobile App Redesign" },
-    { id: "2", name: "Website Overhaul" },
-    { id: "3", name: "Database Migration" },
-    { id: "4", name: "Customer Portal" },
-    { id: "5", name: "API Documentation" },
-  ];
+  const { users } = useSelector((state: RootState) => state.user);
+  const { projects } = useSelector((state: RootState) => state.projects);
 
   const tasks: Task[] = [
     {
       id: "1",
       title: "Design user authentication flow",
-      assignedUsers: [members[0]],
-      status: "In-progress",
+      assignedUsers: [{id : "1" , name: "amit" , email:"amit@gmil.com" , avatar:"ass" , role:"admin" }],
+      status: "INPROGRESS",
       dueDate: "2024-07-20",
       projectId: "1",
       projectName: "Mobile App Redesign",
       priority: "High",
       description: "Create wireframes and mockups for user authentication",
     },
-    {
-      id: "2",
-      title: "Implement login API",
-      assignedUsers: [members[1], members[3]],
-      status: "To-do",
-      dueDate: "2024-07-25",
-      projectId: "1",
-      projectName: "Mobile App Redesign",
-      priority: "High",
-      description: "Build secure login endpoint with JWT authentication",
-    },
+   
    
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "To-do":
+      case "OPEN":
         return "bg-gray-100 text-gray-800";
-      case "In-progress":
+      case "INPROGRESS":
         return "bg-blue-100 text-blue-800";
-      case "Done":
+      case "CLOSED":
         return "bg-green-100 text-green-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -134,12 +81,12 @@ const TasksPage: React.FC = () => {
     return matchesStatus && matchesMember && matchesProject && matchesSearch;
   });
 
-  const statusCounts = {
-    All: tasks.length,
-    "To-do": tasks.filter((t) => t.status === "To-do").length,
-    "In-progress": tasks.filter((t) => t.status === "In-progress").length,
-    Done: tasks.filter((t) => t.status === "Done").length,
-  };
+  // const statusCounts = {
+  //   All: tasks.length,
+  //   "To-do": tasks.filter((t) => t.status === "To-do").length,
+  //   "In-progress": tasks.filter((t) => t.status === "In-progress").length,
+  //   Done: tasks.filter((t) => t.status === "Done").length,
+  // };
 
   const isOverdue = (dueDate: string) => {
     return new Date(dueDate) < new Date();
@@ -182,7 +129,7 @@ const TasksPage: React.FC = () => {
                 Filter by Status
               </h3>
               <div className="flex space-x-2">
-                {(["All", "To-do", "In-progress", "Done"] as const).map(
+                {(["All", "OPEN", "INPROGRESS", "CLOSED"] as const).map(
                   (status) => (
                     <button
                       key={status}
@@ -193,7 +140,7 @@ const TasksPage: React.FC = () => {
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
-                      {status} ({statusCounts[status]})
+                      {/* {status} ({statusCounts[status]}) */}
                     </button>
                   )
                 )}
@@ -214,7 +161,7 @@ const TasksPage: React.FC = () => {
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                   >
                     <option value="All">All Members</option>
-                    {members.map((member) => (
+                    {users?.map((member) => (
                       <option key={member.id} value={member.id}>
                         {member.name}
                       </option>
@@ -263,7 +210,7 @@ const TasksPage: React.FC = () => {
 
             {/* Table Body */}
             <div className="divide-y divide-gray-200">
-              {filteredTasks.map((task) => (
+              {filteredTasks?.map((task) => (
                 <div
                   key={task.id}
                   className="px-6 py-4 hover:bg-gray-50 transition-colors"
@@ -289,7 +236,7 @@ const TasksPage: React.FC = () => {
                     {/* Assigned Users */}
                     <div className="col-span-2">
                       <div className="flex -space-x-2">
-                        {task.assignedUsers.slice(0, 3).map((user) => (
+                        {/* {task.assignedUsers.slice(0, 3).map((user) => (
                           <img
                             key={user.id}
                             src={user.avatar}
@@ -297,14 +244,14 @@ const TasksPage: React.FC = () => {
                             className="w-8 h-8 rounded-full border-2 border-white"
                             title={user.name}
                           />
-                        ))}
-                        {task.assignedUsers.length > 3 && (
+                        ))} */}
+                        {/* {task.assignedUsers.length > 3 && (
                           <div className="w-8 h-8 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center">
                             <span className="text-xs text-gray-600">
                               +{task.assignedUsers.length - 3}
                             </span>
                           </div>
-                        )}
+                        )} */}
                       </div>
                     </div>
 
@@ -360,21 +307,21 @@ const TasksPage: React.FC = () => {
             </div>
 
             {/* Empty State */}
-            {filteredTasks.length === 0 && (
+            {/* {filteredTasks.length === 0 && (
               <div className="text-center py-12">
                 <CheckSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">
                   No tasks found matching your criteria
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </main>
       </div>
 
       {/* Create Task Modal */}
       {showCreateModal && (
-       <CreateTask members={members} projects={projects} setShowCreateModal={setShowCreateModal} />
+       <CreateTask users={users} projects={projects} setShowCreateModal={setShowCreateModal} />
       )}
     </div>
   );
