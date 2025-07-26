@@ -1,5 +1,9 @@
+import axios from 'axios'
 import { Calendar, ChevronDown, FileText, X } from 'lucide-react'
 import { useState } from 'react'
+import { SingleTaskMapping } from '../../FieldMapping/taskMapping'
+import { addTask } from '../../redux/taskSlice'
+import { useDispatch } from 'react-redux'
 
 interface propType {
     setShowCreateModal : (string : boolean)=> void
@@ -8,27 +12,35 @@ interface propType {
 
 }
 const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
+  const disptach = useDispatch()
 
     // hook to create new task;
-    const [taskData , setTaskData] = useState({
+    const [taskData , setTaskData] = useState<Task>({
         title : "" , 
         description : "" , 
         dueDate : "" , 
-        assignedUsers : "" , 
+        assignedUser : "" , 
         status : "INPROGRESS" , 
-        projectId : "",
+        id : "" ,
         projectName : "",
         priority : "Medium",
-  
     })
 
+  
+
     const handleChange = (e : any)=>{
+      
       setTaskData((prev) => ({...prev , [e.target.name] : e.target.value}))
     }
 
-    const handleSubmit = () =>{
+    const handleSubmit = async () =>{
       setShowCreateModal(false)
-      console.log(taskData)
+      const Data = { ...taskData , dueDate : new Date(taskData.dueDate).toISOString() }
+      console.log(Data)
+        const newTask = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/task/createTask`,Data, {withCredentials : true} ) 
+            const data = SingleTaskMapping(newTask.data.data)
+            console.log(data)
+            disptach(addTask(data))
     }
 
   return (
@@ -88,10 +100,10 @@ const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
                   Project
                 </label>
                 <div className="relative">
-                  <select name='projectId'  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                  <select name='projectName' value={taskData.projectName} onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
                     <option value="">Select project...</option>
                     {projects.map((project) => (
-                      <option key={project.id} value={project.id} onChange={ (e)=> setTaskData((prev) => ({...prev , projectId : project.id , projectName : project.name})) }>
+                      <option key={project.id}  value={project.id}  >
                         {project.name}
                       </option>
                     ))}
@@ -112,7 +124,10 @@ const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
                       className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
                     >
                       <input
-                        type="checkbox"
+                      name='assignedUser'
+                      value={member.id}
+                        type="radio"
+                        onChange={handleChange}
                         className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
                       <img
@@ -141,6 +156,9 @@ const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
                     <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input
                       type="date"
+                      name='dueDate'
+                      onChange={handleChange}
+                      value={taskData.dueDate}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -150,7 +168,7 @@ const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Priority
                   </label>
-                  <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <select name='priority' onChange={handleChange} className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     <option value="">Select priority...</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>

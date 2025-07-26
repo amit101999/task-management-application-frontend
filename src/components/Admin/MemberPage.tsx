@@ -2,76 +2,23 @@ import React, { useState } from 'react';
 import { Search, Plus, Mail, MoreHorizontal, Filter, User, Crown, Shield, Users } from 'lucide-react';
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
+import { UsefetchUsers } from '../../hooks/hookUsers';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
 
-interface Member {
-  id: string;
-  name: string;
-  email: string;
-  role: 'Admin' | 'Manager' | 'Developer' | 'Designer';
-  avatar: string;
-  tasksCount: number;
-  status: 'Active' | 'Inactive';
-  joinedDate: string;
-}
 
-const MembersPage: React.FC = () => {
+
+const MembersPage = () => {
+
+  UsefetchUsers()
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState('All');
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const { users } = useSelector((state: RootState) => state.user);
+  console.log(users)
 
-  // Mock data
-  const members: Member[] = [
-    {
-      id: '1',
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@company.com',
-      role: 'Admin',
-      avatar: 'SJ',
-      tasksCount: 12,
-      status: 'Active',
-      joinedDate: '2024-01-15'
-    },
-    {
-      id: '2',
-      name: 'Michael Chen',
-      email: 'michael.chen@company.com',
-      role: 'Manager',
-      avatar: 'MC',
-      tasksCount: 8,
-      status: 'Active',
-      joinedDate: '2024-02-20'
-    },
-    {
-      id: '3',
-      name: 'Emma Davis',
-      email: 'emma.davis@company.com',
-      role: 'Developer',
-      avatar: 'ED',
-      tasksCount: 15,
-      status: 'Active',
-      joinedDate: '2024-03-10'
-    },
-    {
-      id: '4',
-      name: 'Alex Rodriguez',
-      email: 'alex.rodriguez@company.com',
-      role: 'Designer',
-      avatar: 'AR',
-      tasksCount: 6,
-      status: 'Inactive',
-      joinedDate: '2024-01-25'
-    },
-    {
-      id: '5',
-      name: 'Lisa Thompson',
-      email: 'lisa.thompson@company.com',
-      role: 'Developer',
-      avatar: 'LT',
-      tasksCount: 11,
-      status: 'Active',
-      joinedDate: '2024-02-14'
-    }
-  ];
+
 
   const getRoleIcon = (role: string) => {
     switch (role) {
@@ -186,7 +133,7 @@ const MembersPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {members.map((member) => (
+                {users?.map((member , index) => (
                   <tr key={member.id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-3">
@@ -207,7 +154,7 @@ const MembersPage: React.FC = () => {
                     </td>
                     <td className="py-4 px-6">
                       <button className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
-                        {member.tasksCount} tasks
+                        {member?.tasks.length} tasks
                       </button>
                     </td>
                     <td className="py-4 px-6">

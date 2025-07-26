@@ -12,8 +12,6 @@ import CreateTask from "./CreateTask";
 import type { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 
-
-
 const TasksPage: React.FC = () => {
   const [activeStatusFilter, setActiveStatusFilter] = useState<
     "All" | "OPEN" | "INPROGRESS" | "CLOSED"
@@ -24,22 +22,8 @@ const TasksPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { users } = useSelector((state: RootState) => state.user);
   const { projects } = useSelector((state: RootState) => state.projects);
-  // const { tasks } = userS
-
-  const tasks: Task[] = [
-    {
-      id: "1",
-      title: "Design user authentication flow",
-      assignedUser: "AMIT",
-      status: "INPROGRESS",
-      dueDate: "2024-07-20",
-      projectName: "Mobile App Redesign",
-      priority: "High",
-      description: "Create wireframes and mockups for user authentication",
-    },
-   
-   
-  ];
+  const { tasks } = useSelector((state: RootState) => state.tasks);
+  console.log(tasks);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,10 +54,8 @@ const TasksPage: React.FC = () => {
   const filteredTasks = tasks.filter((task) => {
     const matchesStatus =
       activeStatusFilter === "All" || task.status === activeStatusFilter;
-    const matchesMember =
-      activeMemberFilter === "All" 
-    const matchesProject =
-      activeProjectFilter === "All" 
+    const matchesMember = activeMemberFilter === "All";
+    const matchesProject = activeProjectFilter === "All";
     const matchesSearch = task.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -209,7 +191,7 @@ const TasksPage: React.FC = () => {
 
             {/* Table Body */}
             <div className="divide-y divide-gray-200">
-              {filteredTasks?.map((task) => (
+              {filteredTasks?.map((task , index) => (
                 <div
                   key={task.id}
                   className="px-6 py-4 hover:bg-gray-50 transition-colors"
@@ -234,11 +216,10 @@ const TasksPage: React.FC = () => {
 
                     {/* Assigned Users */}
                     <div className="col-span-2">
-                      <div className="flex -space-x-2">
-                        {/* {task.assignedUsers.slice(0, 3).map((user) => (
+                        {/* {tasks.slice(0, 3).map((user) => (
                           <img
                             key={user.id}
-                            src={user.avatar}
+                            src={user}
                             alt={user.name}
                             className="w-8 h-8 rounded-full border-2 border-white"
                             title={user.name}
@@ -251,7 +232,9 @@ const TasksPage: React.FC = () => {
                             </span>
                           </div>
                         )} */}
-                      </div>
+
+                              {tasks[index].assignedUser}
+                    
                     </div>
 
                     {/* Status */}
@@ -320,7 +303,11 @@ const TasksPage: React.FC = () => {
 
       {/* Create Task Modal */}
       {showCreateModal && (
-       <CreateTask users={users} projects={projects} setShowCreateModal={setShowCreateModal} />
+        <CreateTask
+          users={users}
+          projects={projects}
+          setShowCreateModal={setShowCreateModal}
+        />
       )}
     </div>
   );

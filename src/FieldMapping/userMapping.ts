@@ -5,5 +5,7 @@ export const userMapping = (user : any) : UserType[] =>{
         avatar : null,
         role : item.role , 
         email : item.email , 
+        tasks : item.tasks ,
+        projects : item.projects
     }))
 }

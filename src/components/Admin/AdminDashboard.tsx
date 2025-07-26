@@ -1,8 +1,7 @@
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
-import { UsefetchUser } from '../../hooks/fetchUser';
-import { UsefetchTask } from '../../hooks/getAllTask';
+import { UsefetchTask } from '../../hooks/hookTask';
 
 // Sample data for charts
 const taskStatusData = [
@@ -24,7 +23,6 @@ const weeklyProgressData = [
 
 const AdminDashboard = () => {
   // fetching all users in redux
-  UsefetchUser()
   UsefetchTask()
 
   const overviewCards = [

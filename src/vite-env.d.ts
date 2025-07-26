@@ -17,21 +17,19 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   value : string
   icon?: React.ReactNode;
 }
+
+// used intreface
 interface UserType {
   id : string , 
   name : string ,
   avatar : string ,
   role : string,
   email : string
-  password? : string
+  password? : string ,
+  tasks : Task[] ,
+  projects : ProjectType[]
 }
 
-
-
-//  interface projectType {
-//     id : string,
-//     name : String
-//   }
 
   interface ProjectType {
   id: string;
@@ -47,7 +45,7 @@ interface UserType {
 }
 
 interface Task {
-  id: string
+  id?: string
   title: string;
   assignedUser: string
   status: "OPEN" | "INPROGRESS" | "COLSED";
