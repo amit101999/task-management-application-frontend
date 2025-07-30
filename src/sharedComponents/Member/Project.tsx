@@ -1,5 +1,7 @@
+import axios from 'axios'
 import { Calendar, CheckCircle, Circle, Clock, Filter, Search, User } from 'lucide-react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { taskMapping } from '../../FieldMapping/taskMapping'
 
 
 interface PropType{
@@ -7,8 +9,27 @@ interface PropType{
     selectedProject : ProjectType
 }
 
-
 const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
+  const [tasks , setTasks] = useState<Task[]>()
+
+useEffect(() => {
+
+  const fetchProjectsByid = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/project/getProject/${selectedProject.id}`, { withCredentials: true });
+      // dispatch({ type: 'projects/setProjects', payload: res.data.data });
+      // console.log(res.data.data.tasks);
+      
+      const data = taskMapping(res.data.data.tasks)
+      setTasks(data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  }
+  fetchProjectsByid()
+  
+},[selectedProject , setTasks])
+
 
   const getStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
@@ -75,7 +96,7 @@ const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
                     </div>
 
                     <div className="grid gap-4">
-                      {getProjectTasks(selectedProject.id).map((task : Task) => (
+                      {tasks?.map((task : Task) => (
                         <div
                           key={task.id}
                           className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"

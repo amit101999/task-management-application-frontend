@@ -23,7 +23,14 @@ const TasksPage: React.FC = () => {
   const { users } = useSelector((state: RootState) => state.user);
   const { projects } = useSelector((state: RootState) => state.projects);
   const { tasks } = useSelector((state: RootState) => state.tasks);
+
+  const setFiltertasks = (e : any) =>{
+    console.log(e.target.value);
+    setActiveMemberFilter(e.target.value);
   console.log(tasks);
+  console.log(activeMemberFilter);
+  }
+  
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -56,6 +63,7 @@ const TasksPage: React.FC = () => {
       activeStatusFilter === "All" || task.status === activeStatusFilter;
     const matchesMember = activeMemberFilter === "All";
     const matchesProject = activeProjectFilter === "All";
+
     const matchesSearch = task.title
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
@@ -121,6 +129,7 @@ const TasksPage: React.FC = () => {
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
+                      abcsed
                       {/* {status} ({statusCounts[status]}) */}
                     </button>
                   )
@@ -138,7 +147,7 @@ const TasksPage: React.FC = () => {
                 <div className="relative">
                   <select
                     value={activeMemberFilter}
-                    onChange={(e) => setActiveMemberFilter(e.target.value)}
+                    onChange={(e) => setFiltertasks(e)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                   >
                     <option value="All">All Members</option>

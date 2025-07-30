@@ -2,28 +2,22 @@ import React, { useState } from 'react';
 import { Search, Calendar, CheckCircle, Clock, Circle, Filter } from 'lucide-react';
 import Header from '../../sharedComponents/Member/Header';
 import Sidebar from '../../sharedComponents/Member/Sidebar';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
 
-interface Task {
-  id: string;
-  title: string;
-  status: 'Todo' | 'In Progress' | 'Done';
-  dueDate: string;
-  project: string;
-}
+
+
 
 const TaskDashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
 
-  const tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Design user authentication flow',
-      status: 'In Progress',
-      dueDate: '2024-07-25',
-      project: 'Mobile App Redesign'
-    },
-  ];
+  
+
+  // getting all the user tasks
+  const { user } = useSelector((state : RootState) => state.user)
+  const tasks : UserTask[] | undefined = user?.tasks
+  
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -97,7 +91,7 @@ const TaskDashboard: React.FC = () => {
 
               {/* Tasks Grid */}
               <div className="grid gap-4">
-                {tasks.map((task) => (
+                {tasks?.map((task) => (
                   <div
                     key={task.id}
                     className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
@@ -105,7 +99,7 @@ const TaskDashboard: React.FC = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3 mb-2">
-                          {getStatusIcon(task.status)}
+                          {getStatusIcon(task.task_status)}
                           <h4 className="font-medium text-gray-800">{task.title}</h4>
                         </div>
                         
@@ -114,17 +108,18 @@ const TaskDashboard: React.FC = () => {
                             <Calendar className="w-4 h-4 mr-1" />
                             Due: {task.dueDate}
                           </span>
-                          <span>Project: {task.project}</span>
+                          <span>Project: {task.title}</span>
                         </div>
                         
                         <div className="flex items-center justify-between">
-                          <span className={getStatusBadge(task.status)}>
-                            {task.status}
+                          <span className={getStatusBadge(task.task_status)}>
+                            {task.task_status}
                           </span>
                           
                           <div className="flex space-x-2">
-                            {task.status !== 'Done' && (
-                              <button className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
+                            {task.task_status !== 'COLSED' && (
+                              <button onClick={ () => console.log('Mark Complete' , task.id)}
+                               className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
                                 Mark Complete
                               </button>
                             )}

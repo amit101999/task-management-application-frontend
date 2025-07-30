@@ -2,6 +2,9 @@ import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Toolti
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
 import { UsefetchTask } from '../../hooks/hookTask';
+import { UseFetchProject } from '../../hooks/hookProject';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../redux/store';
 
 // Sample data for charts
 const taskStatusData = [
@@ -24,13 +27,19 @@ const weeklyProgressData = [
 const AdminDashboard = () => {
   // fetching all users in redux
   UsefetchTask()
+  UseFetchProject()
+  
+  const { projects } = useSelector((store: RootState) => store.projects);
+  const { tasks } = useSelector((store: RootState) => store.tasks);
+  console.log(projects);
 
   const overviewCards = [
-    { title: 'Total Projects', value: '24', change: '+12%', color: 'bg-blue-50 border-blue-200' },
-    { title: 'Total Members', value: '156', change: '+8%', color: 'bg-green-50 border-green-200' },
+    { title: 'Total Projects', value: projects.length , change: '+12%', color: 'bg-blue-50 border-blue-200' },
+    { title: 'Total Members', value: tasks.length, change: '+8%', color: 'bg-green-50 border-green-200' },
     { title: 'Tasks In Progress', value: '89', change: '+5%', color: 'bg-yellow-50 border-yellow-200' },
     { title: 'Completed Tasks', value: '342', change: '+23%', color: 'bg-purple-50 border-purple-200' }
   ];
+
 
   return (
       <div className="flex h-screen bg-gray-50">  

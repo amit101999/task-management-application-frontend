@@ -11,31 +11,14 @@ import {
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
 import CreateProject from './CreateProject';
-import { useDispatch } from 'react-redux';
-import { getAllProject } from '../../redux/projectSlice';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../redux/store';
-import { formatproject } from '../../FieldMapping/projectMap';
 
 
 const ProjectsPage = () => {
   const [activeFilter, setActiveFilter] = useState<'All' | 'Active' | 'Completed' | 'Upcoming'>('All');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const dispatch = useDispatch()
    const {projects} = useSelector((store : RootState ) => store.projects) 
-   console.log(projects)
-
-    useEffect(()=>{
-      const fetechProjects = async () => {
-          const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/project/getAllProject` , {withCredentials : true} )
-          const data : ProjectType[] = formatproject(res.data.data)
-          // console.log(res.data.data)
-          dispatch(getAllProject(data))
-      }
-      fetechProjects()
-  },[])
-
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -116,6 +99,7 @@ const ProjectsPage = () => {
                       : 'text-gray-600 hover:bg-gray-100'
                   }`}
                 >
+                {filter}
                 </button>
               ))}
             </div>

@@ -9,7 +9,11 @@ import {
   ChevronDown,
 } from "lucide-react";
 import ProfileImageUpload from "./FileUpload";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
+import { SingleuserMapping, userMapping } from "../FieldMapping/userMapping";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/userSlice";
 
 // TypeScript Interfaces
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -66,12 +70,12 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-const Input: React.FC<InputProps> = ({
+const Input = ({
   label,
   icon,
   className = "",
   ...props
-}) => {
+} : InputProps) => {
   return (
     <div className="w-full">
       {label && (
@@ -156,6 +160,35 @@ const Card: React.FC<CardProps> = ({ children, className = "" }) => {
 const SignupPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [deatils, setDetails] = useState({
+    name : "",
+    email : "",
+    password  : "",
+    confirmPassword : "",
+    profileImage : ""
+});
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleInputChange = (e : any) => {
+    setDetails((prevState) => ({ ...prevState, [e.target.name]: e.target.value }))
+  };
+
+  const handleRegisterUser = async (e : any)=>{
+    e.preventDefault();
+    const formData = new FormData()
+    formData.append("name" , deatils.name)
+    formData.append("email" , deatils.email)
+    formData.append("password" , deatils.password)
+    formData.append("profileImage" , deatils.profileImage)
+
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/createUser` , formData , {withCredentials : true} )
+      console.log(res)
+      // const data = SingleuserMapping(res.data.data)
+      // dispatch(loginSuccess(data))
+      // navigate("/member/dashboard")
+
+  }
 
 
   return (
@@ -182,7 +215,9 @@ const SignupPage: React.FC = () => {
               <Input
                 label="Full Name"
                 type="text"
-                name="fullName"
+                name="name"
+                value={deatils.name}
+                onChange={handleInputChange}
                 placeholder="Enter your full name"
                 icon={<User size={20} />}
               />
@@ -192,6 +227,8 @@ const SignupPage: React.FC = () => {
                 label="Email Address"
                 type="email"
                 name="email"
+                value={deatils.email}
+                onChange={handleInputChange}
                 placeholder="Enter your email"
                 icon={<Mail size={20} />}
               />
@@ -204,6 +241,8 @@ const SignupPage: React.FC = () => {
                   label="Password"
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  value={deatils.password}
+                    onChange={handleInputChange}
                   placeholder="Create a password"
                   icon={<Lock size={20} />}
                 />
@@ -220,6 +259,8 @@ const SignupPage: React.FC = () => {
               <div className="relative w-full">
                 <Input
                   label="Confirm Password"
+                  value={deatils.confirmPassword}
+                  onChange={handleInputChange}
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Confirm your password"
@@ -240,7 +281,7 @@ const SignupPage: React.FC = () => {
             </div>
 
             {/* Profile Image Upload */}
-            <ProfileImageUpload />
+            <ProfileImageUpload setDetails={setDetails} />
 
             {/* Terms and Conditions */}
             <div className="flex items-start space-x-3">
@@ -273,6 +314,7 @@ const SignupPage: React.FC = () => {
               className="w-full"
               size="lg"
               type="submit"
+              onClick={(e) => { handleRegisterUser(e) } }
             >
               Create Account
             </Button>

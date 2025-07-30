@@ -28,8 +28,8 @@ export const userSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    loginSuccess(state, action: PayloadAction<AuthType>) {
-      state.user = action.payload.user;
+    loginSuccess(state, action: PayloadAction<UserType>) {
+      state.user = action.payload;
       state.loading = false;
       state.error = null;
     },

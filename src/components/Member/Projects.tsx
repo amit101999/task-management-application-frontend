@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Search, Bell, LogOut, User, Calendar, CheckCircle, Clock, Circle, Filter, ChevronRight, Users, Target, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
+import { Search, Calendar, CheckCircle, ChevronRight, Users, Target, ArrowLeft } from 'lucide-react';
 import Header from '../../sharedComponents/Member/Header';
 import Sidebar from '../../sharedComponents/Member/Sidebar';
 import ProjectTask from '../../sharedComponents/Member/Project';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../redux/store';
-import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { getAllProject } from '../../redux/projectSlice';
-import { formatproject } from '../../FieldMapping/projectMap';
 
 interface Task {
   id: string;
@@ -21,53 +18,20 @@ interface Task {
   priority?: 'Low' | 'Medium' | 'High';
 }
 
-interface ProjectType {
-  id: string;
-  name: string;
-  description: string;
-  progress: number;
-  status: 'Active' | 'Completed' | 'On Hold';
-  dueDate: string;
-  teamMembers: string[];
-  totalTasks: number;
-  completedTasks: number;
-}
+
 
 const MemberProjects = () => {
-  const dispatch = useDispatch()
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
 
-  const {projects} = useSelector((store : RootState ) => store.projects) 
+  // const {projects} = useSelector((store : RootState ) => store.projects) 
+
+  const { user } = useSelector((store : RootState ) => store.user)
+  const [ tasks , setTasks] = useState<Task[]>()
   
-
-  useEffect(()=>{
-      const fetechProjects = async () => {
-          const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/project/getAllProject` , {withCredentials : true} )
-          const data : ProjectType[] = formatproject(res.data.data)
-          console.log(data)
-          dispatch(getAllProject(data))
-      }
-      fetechProjects()
-  },[])
-
-
-  const tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Design user authentication flow',
-      status: 'In Progress',
-      dueDate: '2024-07-25',
-      project: 'Mobile App Redesign',
-      projectId: '1',
-      assignee: 'Amit Kumar',
-      priority: 'High'
-    },
-    
-  ];
-
+  const projects = user?.projects
 
   const getProjectTasks = (projectId: string) => {
-    return tasks.filter(task => task.projectId === projectId);
+    return tasks?.filter(task => task.projectId === projectId);
   };
  const getProjectStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
@@ -112,7 +76,7 @@ const MemberProjects = () => {
                   </div>
 
                   <div className="grid gap-6">
-                    {projects.map((project : ProjectType) => (
+                    {projects?.map((project : ProjectType) => (
                       <div
                         key={project.id}
                         className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
@@ -136,11 +100,11 @@ const MemberProjects = () => {
                                 Due: {project.dueDate}
                               </div>
                               
-                              <div className="flex items-center text-sm text-gray-600">
+                              {/* <div className="flex items-center text-sm text-gray-600">
                                 <Users className="w-4 h-4 mr-1" />
                                 {project.teamMembers.length} members
                               </div>
-                              
+                               */}
                               <div className="flex items-center text-sm text-gray-600">
                                 <Target className="w-4 h-4 mr-1" />
                                 {project.completedTasks}/{project.totalTasks} tasks
@@ -163,7 +127,7 @@ const MemberProjects = () => {
                         </div>
                         
                         <div className="flex items-center justify-between mt-4">
-                          <div className="flex -space-x-2">
+                          {/* <div className="flex -space-x-2">
                             {project.teamMembers.slice(0, 3).map((member, index) => (
                               <div
                                 key={index}
@@ -177,7 +141,7 @@ const MemberProjects = () => {
                                 +{project.teamMembers.length - 3}
                               </div>
                             )}
-                          </div>
+                          </div> */}
                           
                           <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                             View Details →
@@ -244,7 +208,7 @@ const MemberProjects = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-gray-600">Team</p>
-                          <p className="text-lg font-bold text-gray-800">{selectedProject.teamMembers.length}</p>
+                          <p className="text-lg font-bold text-gray-800">{selectedProject.teamMembers?.length}</p>
                         </div>
                         <div className="p-2 bg-purple-100 rounded-full">
                           <Users className="w-4 h-4 text-purple-600" />

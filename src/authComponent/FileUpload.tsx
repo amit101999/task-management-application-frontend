@@ -1,7 +1,10 @@
 import { Upload, User } from "lucide-react";
 import { useState } from "react";
 
-const ProfileImageUpload: React.FC = () => {
+interface propType {
+  setDetails: (prevState: any)=> void ,
+}
+const ProfileImageUpload= ({ setDetails } : propType) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -33,6 +36,7 @@ const ProfileImageUpload: React.FC = () => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+       setDetails((prevState : any) => ({ ...prevState, [e.target.name]: e.target.value}))
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => setPreview(e.target?.result as string);
@@ -69,7 +73,8 @@ const ProfileImageUpload: React.FC = () => {
             onDrop={handleDrop}
           >
             <input
-              type="file"
+            type="file"
+            name="profileImage"
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               onChange={handleFileInput}
               accept="image/*"

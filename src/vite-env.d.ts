@@ -26,10 +26,19 @@ interface UserType {
   role : string,
   email : string
   password? : string ,
-  tasks : Task[] ,
+  tasks : UserTask[] ,
   projects : ProjectType[]
 }
 
+interface UserTask{
+  id : string,
+  title : string,
+  description : string,
+  priority : string,
+  task_status : string,
+  dueDate : string,
+  startdate : string,
+}
 
   interface ProjectType {
   id: string;
@@ -55,6 +64,7 @@ interface Task {
   description: string;
   startDate? : string
 }
+i
 
 interface Project {
   id: string;

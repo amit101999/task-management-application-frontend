@@ -1,10 +1,17 @@
-import React, { use, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, Target } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 // import { useLogin } from '../hooks/hookUsers';
 import { Button } from '../UIComponents/AuthButtons';
 import { Input } from '../UIComponents/Input';
 import { Card } from '../UIComponents/Card';
+import axios from 'axios';
+import {  toast } from 'react-toastify';
+import { SingleuserMapping } from '../FieldMapping/userMapping';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '../redux/userSlice';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../redux/store';
 
 // Main Login Component
 const LoginPage: React.FC = () => {
@@ -13,18 +20,38 @@ const LoginPage: React.FC = () => {
     email : "",
     password :""
   });
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  // getting user from state
+  const { user } = useSelector((state: RootState) => state.user);
+  useEffect(() => {
+    // If user is already logged in, redirect to dashboard
+    if (user) {
+      navigate("/member/dashboard");
+    }
+  }, [user, navigate]);
+ 
+
 
   const handleChange = (e : React.ChangeEvent<HTMLInputElement >)=>{
     setUserState((prevState) => ({...prevState , [e.target.name]: e.target.value}) )
   }
   
+ 
   
-  
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(userState.email , userState.password)
-    // Handle form submission here
-    // useLogin(userState.email , userState.password)
+    try{
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/login` , userState , {withCredentials : true} )
+      const data = SingleuserMapping(res.data.data)
+      dispatch(loginSuccess(data))
+      toast.success("Login Successfull")
+      navigate("/member/dashboard")
+    }catch(err){
+        toast.error("Wrong credentials")
+        console.log(err)
+    }
   };
 
   return (
