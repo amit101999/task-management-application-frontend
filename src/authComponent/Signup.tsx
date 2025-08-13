@@ -75,7 +75,7 @@ const Input = ({
   icon,
   className = "",
   ...props
-} : InputProps) => {
+}: InputProps) => {
   return (
     <div className="w-full">
       {label && (
@@ -158,38 +158,39 @@ const Card: React.FC<CardProps> = ({ children, className = "" }) => {
 
 // Main Signup Component
 const SignupPage: React.FC = () => {
+  const [loader, setLoader] = useState<Boolean>(false);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [deatils, setDetails] = useState({
-    name : "",
-    email : "",
-    password  : "",
-    confirmPassword : "",
-    profileImage : ""
-});
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    profileImage: ""
+  });
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleInputChange = (e : any) => {
+  const handleInputChange = (e: any) => {
     setDetails((prevState) => ({ ...prevState, [e.target.name]: e.target.value }))
   };
 
-  const handleRegisterUser = async (e : any)=>{
+  const handleRegisterUser = async (e: any) => {
+    setLoader(true)
     e.preventDefault();
     const formData = new FormData()
-    formData.append("name" , deatils.name)
-    formData.append("email" , deatils.email)
-    formData.append("password" , deatils.password)
-    formData.append("profileImage" , deatils.profileImage)
-    
-    
-    console.log(formData)
+    formData.append("name", deatils.name)
+    formData.append("email", deatils.email)
+    formData.append("password", deatils.password)
+    formData.append("profileImage", deatils.profileImage)
 
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/createUser` , formData , {withCredentials : true} )
-      console.log(res)
-      const data = SingleuserMapping(res.data.data)
-      dispatch(loginSuccess(data))
-      navigate("/member/dashboard")
+
+    const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/createUser`, formData, { withCredentials: true })
+    const data = SingleuserMapping(res.data.data)
+    dispatch(loginSuccess(data))
+    setLoader(false)
+    navigate("/member/dashboard")
 
   }
 
@@ -245,7 +246,7 @@ const SignupPage: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={deatils.password}
-                    onChange={handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="Create a password"
                   icon={<Lock size={20} />}
                 />
@@ -317,9 +318,16 @@ const SignupPage: React.FC = () => {
               className="w-full"
               size="lg"
               type="submit"
-              onClick={(e) => { handleRegisterUser(e) } }
+              onClick={(e) => { handleRegisterUser(e) }}
             >
-              Create Account
+              {loader ?
+                (<>
+                  <div className="animate-spin text-white font-bold rounded-full h-12 w-12 border-b-2"></div>
+                </>) :
+                (<>
+                  Create Account
+                </>
+                )}
             </Button>
 
             {/* Divider */}
@@ -363,12 +371,12 @@ const SignupPage: React.FC = () => {
             <p className="text-sm text-gray-600">
               Already have an account?{" "}
               <Link to="/login">
-              <button
-                type="button"
-                className="text-blue-600 hover:text-blue-500 font-medium transition-colors"
-              >
-                Login
-              </button>
+                <button
+                  type="button"
+                  className="text-blue-600 hover:text-blue-500 font-medium transition-colors"
+                >
+                  Login
+                </button>
               </ Link>
             </p>
           </div>

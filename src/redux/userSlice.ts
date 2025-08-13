@@ -1,29 +1,30 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthType {
-  users : UserType[] ;
+  users: UserType[];
   user: UserType | null;
   loading: boolean;
   error: string | null;
-  filteruser : UserType[]
+  filteredUser: UserType[]
 }
 
 const initialState: AuthType = {
   // Array of users
-  users:[],
+  users: [],
   // single user
   user: null,
   loading: false,
   error: null,
-  filteruser: []
+  filteredUser: []
 };
 
 export const userSlice = createSlice({
   name: "user ",
   initialState,
   reducers: {
-    loadUser : (state , action : PayloadAction<UserType[]>) => {
-        state.users = action.payload
+    loadUser: (state, action: PayloadAction<UserType[]>) => {
+      state.users = action.payload
+      state.filteredUser = action.payload;
     },
     loginStart(state) {
       state.user = null;
@@ -35,7 +36,7 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-     loginFailure(state, action: PayloadAction<string>) {
+    loginFailure(state, action: PayloadAction<string>) {
       state.error = action.payload;
       state.loading = false;
       state.user = null;
@@ -45,10 +46,11 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    filterUser : (state , action: PayloadAction<string>) => {
-      
-  },
+    filterUser: (state, action: PayloadAction<string>) => {
+      state.filteredUser = state.users.filter((item) => item.name.toLowerCase().includes(action.payload.toLowerCase()));
+    }
+  }
 });
 
-export const { loginFailure, loginStart, loginSuccess, logoutUser,loadUser ,filterUser } = userSlice.actions;
+export const { loginFailure, loginStart, loginSuccess, logoutUser, loadUser, filterUser } = userSlice.actions;
 export default userSlice.reducer;

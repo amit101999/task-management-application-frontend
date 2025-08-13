@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Calendar, 
-  Users, 
-  FileText, 
-  Download, 
-  Eye, 
-  Upload, 
-  Send, 
+import {
+  Calendar,
+  Users,
+  FileText,
+  Download,
+  Eye,
+  Upload,
+  Send,
   Clock,
   CheckCircle,
   AlertCircle,
@@ -89,7 +89,7 @@ const StatusBadge: React.FC<{ status: 'Active' | 'Completed' | 'On Hold' }> = ({
 const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => {
   return (
     <div className="w-full bg-gray-200 rounded-full h-2">
-      <div 
+      <div
         className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-in-out"
         style={{ width: `${progress}%` }}
       />
@@ -97,10 +97,10 @@ const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => {
   );
 };
 
-const Avatar: React.FC<{ name: string; size?: 'sm' | 'md' | 'lg'; isOnline?: boolean }> = ({ 
-  name, 
-  size = 'md', 
-  isOnline 
+const Avatar: React.FC<{ name: string; size?: 'sm' | 'md' | 'lg'; isOnline?: boolean }> = ({
+  name,
+  size = 'md',
+  isOnline
 }) => {
   const sizeStyles = {
     'sm': 'w-6 h-6 text-xs',
@@ -126,7 +126,7 @@ const Avatar: React.FC<{ name: string; size?: 'sm' | 'md' | 'lg'; isOnline?: boo
 
 const FileIcon: React.FC<{ type: string }> = ({ type }) => {
   const iconStyles = "w-5 h-5";
-  
+
   switch (type) {
     case 'pdf':
       return <div className={`${iconStyles} bg-red-100 text-red-600 rounded flex items-center justify-center text-xs font-bold`}>PDF</div>;
@@ -143,18 +143,18 @@ const FileIcon: React.FC<{ type: string }> = ({ type }) => {
 };
 
 export default function ProjectDetailsPage() {
-    const dispatch = useDispatch();
-    const params = useParams<{ id: string }>();
-    useEffect(()=>{
-        dispatch(selectprojectById(params.id || ""));
-    },[params])
-    const { selectedProjectId }  =  useSelector((store : RootState ) => store.projects)
-    console.log(selectedProjectId);
+  const dispatch = useDispatch();
+  const params = useParams<{ id: string }>();
 
-    const teamMembers = selectedProjectId?.teamMembers
+  dispatch(selectprojectById(params.id || ""));
 
-    const tasks =  taskMapping(selectedProjectId?.tasks);
-    console.log(tasks);
+  const { selectedProjectId } = useSelector((store: RootState) => store.projects)
+  console.log(selectedProjectId)
+
+  const teamMembers = selectedProjectId?.teamMembers
+
+  const tasks = taskMapping(selectedProjectId?.tasks);
+  console.log(tasks);
 
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([
@@ -174,21 +174,21 @@ export default function ProjectDetailsPage() {
     }
   ]);
 
-//   const teamMembers: TeamMember[] = [
-//     { id: '1', name: 'Sarah Chen', role: 'Project Manager', avatar: 'SC', tasksAssigned: 8, isOnline: true },
-//     { id: '2', name: 'Mike Johnson', role: 'Full Stack Developer', avatar: 'MJ', tasksAssigned: 12, isOnline: true },
-//     { id: '3', name: 'Emily Rodriguez', role: 'UI/UX Designer', avatar: 'ER', tasksAssigned: 6, isOnline: false },
-//     { id: '4', name: 'Alex Kim', role: 'Backend Developer', avatar: 'AK', tasksAssigned: 10, isOnline: true },
-//     { id: '5', name: 'David Park', role: 'QA Engineer', avatar: 'DP', tasksAssigned: 7, isOnline: false }
-//   ];
+  //   const teamMembers: TeamMember[] = [
+  //     { id: '1', name: 'Sarah Chen', role: 'Project Manager', avatar: 'SC', tasksAssigned: 8, isOnline: true },
+  //     { id: '2', name: 'Mike Johnson', role: 'Full Stack Developer', avatar: 'MJ', tasksAssigned: 12, isOnline: true },
+  //     { id: '3', name: 'Emily Rodriguez', role: 'UI/UX Designer', avatar: 'ER', tasksAssigned: 6, isOnline: false },
+  //     { id: '4', name: 'Alex Kim', role: 'Backend Developer', avatar: 'AK', tasksAssigned: 10, isOnline: true },
+  //     { id: '5', name: 'David Park', role: 'QA Engineer', avatar: 'DP', tasksAssigned: 7, isOnline: false }
+  //   ];
 
-//   const tasks: Task[] = [
-//     { id: '1', name: 'User Authentication System', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 15' },
-//     { id: '2', name: 'Product Catalog UI', status: 'in-progress', assignee: 'Emily Rodriguez', dueDate: 'Mar 22' },
-//     { id: '3', name: 'Payment Integration', status: 'in-progress', assignee: 'Alex Kim', dueDate: 'Mar 25' },
-//     { id: '4', name: 'Shopping Cart Logic', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 10' },
-//     { id: '5', name: 'Mobile Responsive Design', status: 'todo', assignee: 'Emily Rodriguez', dueDate: 'Mar 30' }
-//   ];
+  //   const tasks: Task[] = [
+  //     { id: '1', name: 'User Authentication System', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 15' },
+  //     { id: '2', name: 'Product Catalog UI', status: 'in-progress', assignee: 'Emily Rodriguez', dueDate: 'Mar 22' },
+  //     { id: '3', name: 'Payment Integration', status: 'in-progress', assignee: 'Alex Kim', dueDate: 'Mar 25' },
+  //     { id: '4', name: 'Shopping Cart Logic', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 10' },
+  //     { id: '5', name: 'Mobile Responsive Design', status: 'todo', assignee: 'Emily Rodriguez', dueDate: 'Mar 30' }
+  //   ];
 
   const documents: Document[] = [
     { id: '1', name: 'Project Requirements.pdf', type: 'pdf', size: '2.4 MB', uploadDate: '2 days ago' },
@@ -251,9 +251,9 @@ export default function ProjectDetailsPage() {
     }
   };
 
-  const getUser = (id : string) : string=>{
-     const item =  teamMembers?.filter((item) =>{
-        if(item.id === id) return item
+  const getUser = (id: string): string => {
+    const item = teamMembers?.filter((item) => {
+      if (item.id === id) return item
     })
     console.log(item[0].name)
     return item[0].name
@@ -265,7 +265,7 @@ export default function ProjectDetailsPage() {
       'in-progress': 'bg-yellow-100 text-yellow-800',
       'todo': 'bg-gray-100 text-gray-800'
     };
-    
+
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[status as keyof typeof styles]}`}>
         {status.replace('-', ' ')}
@@ -275,7 +275,7 @@ export default function ProjectDetailsPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-        <SideBar />
+      <SideBar />
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
@@ -298,7 +298,7 @@ export default function ProjectDetailsPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="font-medium text-gray-700">Progress</span>
@@ -320,7 +320,7 @@ export default function ProjectDetailsPage() {
                   View All
                 </button>
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -360,7 +360,7 @@ export default function ProjectDetailsPage() {
             {/* Analytics Card */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Analytics</h2>
-              
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Task Status Pie Chart */}
                 <div className="text-center">
@@ -418,7 +418,7 @@ export default function ProjectDetailsPage() {
             {/* Activity Log Card */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Activity</h2>
-              
+
               <div className="space-y-4">
                 {activities.map((activity) => (
                   <div key={activity.id} className="flex items-start gap-3">
@@ -443,7 +443,7 @@ export default function ProjectDetailsPage() {
                 <Users className="w-5 h-5 text-gray-600" />
                 <h2 className="text-xl font-semibold text-gray-900">Team Members</h2>
               </div>
-              
+
               <div className="space-y-4">
                 {teamMembers?.map((member) => (
                   <div key={member.id} className="flex items-center justify-between">
@@ -475,7 +475,7 @@ export default function ProjectDetailsPage() {
                   Upload
                 </button>
               </div>
-              
+
               <div className="space-y-3">
                 {documents.map((doc) => (
                   <div key={doc.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
@@ -504,7 +504,7 @@ export default function ProjectDetailsPage() {
         {/* Comments Section */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Discussion</h2>
-          
+
           {/* Comment Input */}
           <div className="flex gap-3 mb-6">
             <Avatar name="You" />
