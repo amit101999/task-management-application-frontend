@@ -5,7 +5,6 @@ import Sidebar from '../../sharedComponents/Member/Sidebar';
 import ProjectTask from '../../sharedComponents/Member/Project';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../redux/store';
-import { useDispatch } from 'react-redux';
 
 interface Task {
   id: string;
@@ -22,13 +21,13 @@ interface Task {
 
 const MemberProjects = () => {
   const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
-
-  // const {projects} = useSelector((store : RootState ) => store.projects) 
+  console.log(selectedProject)
 
   const { user } = useSelector((store : RootState ) => store.user)
-  const [ tasks , setTasks] = useState<Task[]>()
-  
-  const projects = user?.projects
+
+  // const {projects} = useSelector((store : RootState ) => store.projects) 
+  const projects = user?.projects 
+  // console.log("projects", projects)
 
   const getProjectTasks = (projectId: string) => {
     return tasks?.filter(task => task.projectId === projectId);
@@ -85,7 +84,7 @@ const MemberProjects = () => {
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <h4 className="text-lg font-medium text-gray-800">{project.name}</h4>
+                              <h4 className="text-lg font-medium text-gray-800">{project.project_name}</h4>
                               <ChevronRight className="w-5 h-5 text-gray-400" />
                             </div>
                             <p className="text-gray-600 mb-3">{project.description}</p>
@@ -97,7 +96,7 @@ const MemberProjects = () => {
                               
                               <div className="flex items-center text-sm text-gray-600">
                                 <Calendar className="w-4 h-4 mr-1" />
-                                Due: {project.dueDate}
+                                Due: {project.end_date}
                               </div>
                               
                               {/* <div className="flex items-center text-sm text-gray-600">
@@ -107,7 +106,7 @@ const MemberProjects = () => {
                                */}
                               <div className="flex items-center text-sm text-gray-600">
                                 <Target className="w-4 h-4 mr-1" />
-                                {project.completedTasks}/{project.totalTasks} tasks
+                                {project.completed_task}/{project.totalTasks} tasks
                               </div>
                             </div>
                           </div>
@@ -208,7 +207,7 @@ const MemberProjects = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm text-gray-600">Team</p>
-                          <p className="text-lg font-bold text-gray-800">{selectedProject.teamMembers?.length}</p>
+                          <p className="text-lg font-bold text-gray-800">{selectedProject.teamMembers?.length}2</p>
                         </div>
                         <div className="p-2 bg-purple-100 rounded-full">
                           <Users className="w-4 h-4 text-purple-600" />
@@ -218,7 +217,7 @@ const MemberProjects = () => {
                   </div>
 
                   {/* Project Tasks */}
-                 <ProjectTask getProjectTasks={getProjectTasks} selectedProject={selectedProject}  />
+                 <ProjectTask getProjectTasks={getProjectTasks} selectedProject={selectedProject} userId ={user?.id}  />
                 </>
               )}
             </div>

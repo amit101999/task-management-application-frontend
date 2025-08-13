@@ -12,7 +12,8 @@ const CreateProject = ({setShowCreateModal } : propType) => {
   const [projectDetail , setProjectDetail] = useState({
     projectName : '',
     description:'',
-    endDate : ''
+    endDate : '',
+    startDate : ''
   })
   const dispatch = useDispatch()
 
@@ -30,7 +31,9 @@ const CreateProject = ({setShowCreateModal } : propType) => {
         withCredentials : true
        } , 
        )
+       console.log(response.data);
        const data : ProjectType = signleProjectFormat(response.data.data)
+       console.log(data);
        dispatch(addProject(data))
   }
 
@@ -84,6 +87,23 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                 />
               </div>
 
+
+              {/* start date */}
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Date
+                </label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="date"
+                    name='startDate'
+                    value={projectDetail.startDate}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
               {/* Due Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -100,6 +120,7 @@ const CreateProject = ({setShowCreateModal } : propType) => {
                   />
                 </div>
               </div>  
+              
 
               {/* Priority */}
               {/* <div>

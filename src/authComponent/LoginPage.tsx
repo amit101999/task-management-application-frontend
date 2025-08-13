@@ -25,10 +25,16 @@ const LoginPage: React.FC = () => {
 
   // getting user from state
   const { user } = useSelector((state: RootState) => state.user);
+
   useEffect(() => {
     // If user is already logged in, redirect to dashboard
     if (user) {
-      navigate("/member/dashboard");
+      if (user.role == "ADMIN") {
+        navigate("/");
+      }else {
+
+        navigate("/member/dashboard");
+      }
     }
   }, [user, navigate]);
  
@@ -47,7 +53,9 @@ const LoginPage: React.FC = () => {
       const data = SingleuserMapping(res.data.data)
       dispatch(loginSuccess(data))
       toast.success("Login Successfull")
-      navigate("/member/dashboard")
+      // Redirect based on user role
+      data.role === "ADMIN" ? navigate("/") : navigate("/member/dashboard");
+
     }catch(err){
         toast.error("Wrong credentials")
         console.log(err)

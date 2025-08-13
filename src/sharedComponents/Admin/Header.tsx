@@ -1,7 +1,22 @@
 import { Bell, Search } from 'lucide-react'
 import React from 'react'
+import { logoutUser } from '../../redux/userSlice'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
+import type { RootState } from '../../redux/store'
+import { useSelector } from 'react-redux'
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+const { user } = useSelector((state: RootState) => state.user);
+  const HandleSignOut = () => {
+    dispatch(logoutUser())
+    navigate("/login");
+    // Redirect to login page or perform any other action after logout
+
+  }
+
   return (
     <div>
           <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
@@ -29,12 +44,12 @@ const Header = () => {
                     {/* Profile */}
                     <div className="flex items-center space-x-3">
                       <img
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt="Profile"
+                        src={user?.avatar}
                         className="w-8 h-8 rounded-full"
                       />
-                      <span className="text-sm font-medium text-gray-900">John Doe</span>
-                      <button className="text-sm text-gray-500 hover:text-gray-700">Logout</button>
+                      <span className="text-sm font-medium text-gray-900">{user?.name}</span>
+                      <button
+                       onClick={HandleSignOut} className="text-sm text-gray-500 hover:text-gray-700">Logout</button>
                     </div>
                   </div>
                 </header>

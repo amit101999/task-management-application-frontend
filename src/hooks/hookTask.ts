@@ -11,7 +11,6 @@ export const UsefetchTask = () => {
        const loadTask = async () => {
             const task = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/task/getAllTask` , {withCredentials : true} )
             const data = taskMapping(task.data.data)
-            console.log(data)
             disptach(getAllTask(data))
        }
        loadTask()

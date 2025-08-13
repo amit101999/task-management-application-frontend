@@ -31,7 +31,7 @@ const AdminDashboard = () => {
   
   const { projects } = useSelector((store: RootState) => store.projects);
   const { tasks } = useSelector((store: RootState) => store.tasks);
-  console.log(projects);
+  
 
   const overviewCards = [
     { title: 'Total Projects', value: projects.length , change: '+12%', color: 'bg-blue-50 border-blue-200' },

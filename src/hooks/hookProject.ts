@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { getAllProject } from "../redux/projectSlice"
+import { filterProjects, getAllProject } from "../redux/projectSlice"
 import axios from "axios"
 import { formatproject } from "../FieldMapping/projectMap"
 

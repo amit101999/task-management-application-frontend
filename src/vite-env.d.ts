@@ -45,6 +45,7 @@ interface UserTask{
   name: string;
   description: string;
   progress: number;
+  startDate: string;
   status: 'Active' | 'Completed' | 'On Hold';
   dueDate: string;
   teamMembers: UserType[];
@@ -58,13 +59,13 @@ interface Task {
   title: string;
   assignedUser: string
   status: "OPEN" | "INPROGRESS" | "COLSED";
-  dueDate: string;
+  dueDate: Date;
   projectName: string;
   priority: "High" | "Medium" | "Low";
   description: string;
   startDate? : string
 }
-i
+
 
 interface Project {
   id: string;

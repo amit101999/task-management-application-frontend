@@ -5,6 +5,7 @@ interface AuthType {
   user: UserType | null;
   loading: boolean;
   error: string | null;
+  filteruser : UserType[]
 }
 
 const initialState: AuthType = {
@@ -14,6 +15,7 @@ const initialState: AuthType = {
   user: null,
   loading: false,
   error: null,
+  filteruser: []
 };
 
 export const userSlice = createSlice({
@@ -43,8 +45,10 @@ export const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    filterUser : (state , action: PayloadAction<string>) => {
+      
   },
 });
 
-export const { loginFailure, loginStart, loginSuccess, logoutUser,loadUser } = userSlice.actions;
+export const { loginFailure, loginStart, loginSuccess, logoutUser,loadUser ,filterUser } = userSlice.actions;
 export default userSlice.reducer;

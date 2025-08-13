@@ -11,8 +11,8 @@ import {
 import ProfileImageUpload from "./FileUpload";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
-import { SingleuserMapping, userMapping } from "../FieldMapping/userMapping";
 import { useDispatch } from "react-redux";
+import { SingleuserMapping } from "../FieldMapping/userMapping";
 import { loginSuccess } from "../redux/userSlice";
 
 // TypeScript Interfaces
@@ -181,12 +181,15 @@ const SignupPage: React.FC = () => {
     formData.append("email" , deatils.email)
     formData.append("password" , deatils.password)
     formData.append("profileImage" , deatils.profileImage)
+    
+    
+    console.log(formData)
 
       const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/createUser` , formData , {withCredentials : true} )
       console.log(res)
-      // const data = SingleuserMapping(res.data.data)
-      // dispatch(loginSuccess(data))
-      // navigate("/member/dashboard")
+      const data = SingleuserMapping(res.data.data)
+      dispatch(loginSuccess(data))
+      navigate("/member/dashboard")
 
   }
 

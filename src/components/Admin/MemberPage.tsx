@@ -191,14 +191,14 @@ const MembersPage = () => {
               <Users className="w-5 h-5 text-blue-600" />
               <h3 className="font-medium text-gray-900">Total Members</h3>
             </div>
-            <p className="text-2xl font-semibold text-gray-900 mt-1">5</p>
+            <p className="text-2xl font-semibold text-gray-900 mt-1">{users?.length}</p>
           </div>
           <div className="bg-white rounded-lg p-4 border border-gray-200">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-green-500 rounded-full" />
               <h3 className="font-medium text-gray-900">Active</h3>
             </div>
-            <p className="text-2xl font-semibold text-gray-900 mt-1">4</p>
+            <p className="text-2xl font-semibold text-gray-900 mt-1">{users?.length}</p>
           </div>
           <div className="bg-white rounded-lg p-4 border border-gray-200">
             <div className="flex items-center gap-2">

@@ -7,9 +7,22 @@ import { taskMapping } from '../../FieldMapping/taskMapping'
 interface PropType{
     getProjectTasks : (projectId : string) => any
     selectedProject : ProjectType
+    userId : string | undefined
 }
 
-const ProjectTask = ({getProjectTasks , selectedProject , } : PropType) => {
+const ProjectTask = ({getProjectTasks , selectedProject ,userId } : PropType) => {
+
+  const handleTaskCompleted = async (taskId: string) => {
+      try{
+        const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/task/markComplete/${taskId}`, {}, { withCredentials: true });
+        console.log(res.data);
+        // Optionally, you can update the state or refetch tasks here
+        // setTasks(prevTasks => prevTasks.map(task => task.id === taskId ? { ...task, status: 'Done' } : task));
+      }catch(err){
+        console.log(err)
+      }
+  }
+
   const [tasks , setTasks] = useState<Task[]>()
 
 useEffect(() => {
@@ -20,7 +33,9 @@ useEffect(() => {
       // dispatch({ type: 'projects/setProjects', payload: res.data.data });
       // console.log(res.data.data.tasks);
       
-      const data = taskMapping(res.data.data.tasks)
+      let data = taskMapping(res.data.data.tasks)
+      data = data.filter((item) => item.assignedUser === userId)
+      console.log(data)
       setTasks(data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -28,7 +43,7 @@ useEffect(() => {
   }
   fetchProjectsByid()
   
-},[selectedProject , setTasks])
+},[selectedProject , setTasks ])
 
 
   const getStatusBadge = (status: string) => {
@@ -116,11 +131,7 @@ useEffect(() => {
                               <div className="flex items-center space-x-4 text-sm text-gray-600 mb-3">
                                 <span className="flex items-center">
                                   <Calendar className="w-4 h-4 mr-1" />
-                                  Due: {task.dueDate}
-                                </span>
-                                <span className="flex items-center">
-                                  <User className="w-4 h-4 mr-1" />
-                                  {task.id}
+                                  Due: {task.dueDate.split("T")[0]}
                                 </span>
                               </div>
                               
@@ -131,8 +142,8 @@ useEffect(() => {
                                 
                                 <div className="flex space-x-2">
                                   {task.status !== 'COLSED' && (
-                                    <button className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
-                                      Mark Complete
+                                    <button oncClick = {()=> handleTaskCompleted(task.id) } className="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors">
+                                      {task.status === 'Done' ? 'Task Completed' : 'Complete Task'}
                                     </button>
                                   )}
                                   <button className="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">

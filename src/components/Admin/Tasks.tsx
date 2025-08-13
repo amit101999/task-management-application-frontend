@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   CheckSquare,
   Plus,
@@ -11,8 +11,14 @@ import Header from "../../sharedComponents/Admin/Header";
 import CreateTask from "./CreateTask";
 import type { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
+import { UsefetchTask } from "../../hooks/hookTask";
+import { clearFilter, filterByName, filterByStatus, filterProjectByName } from "../../redux/taskSlice";
+import { useDispatch } from "react-redux";
 
 const TasksPage: React.FC = () => {
+UsefetchTask()
+  const dispatch = useDispatch();
+
   const [activeStatusFilter, setActiveStatusFilter] = useState<
     "All" | "OPEN" | "INPROGRESS" | "CLOSED"
   >("All");
@@ -20,16 +26,42 @@ const TasksPage: React.FC = () => {
   const [activeProjectFilter, setActiveProjectFilter] = useState<string>("All");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const { users } = useSelector((state: RootState) => state.user);
+  let { users } = useSelector((state: RootState) => state.user);
+  const {user} = useSelector((state: RootState) => state.user);
   const { projects } = useSelector((state: RootState) => state.projects);
-  const { tasks } = useSelector((state: RootState) => state.tasks);
+  const { filterTasks } = useSelector((state: RootState) => state.tasks);
 
-  const setFiltertasks = (e : any) =>{
-    console.log(e.target.value);
-    setActiveMemberFilter(e.target.value);
-  console.log(tasks);
-  console.log(activeMemberFilter);
+  // dont show the current user in the member filter
+  users = users.filter((u) => u.id !== user?.id);
+  
+// filter by projectname
+ useEffect(()=>{
+  if(activeProjectFilter === "All") { 
+    dispatch(clearFilter())
+  } else {
+    dispatch(filterProjectByName(activeProjectFilter.toLocaleLowerCase()));
   }
+ },[activeProjectFilter])
+
+ 
+useEffect(() => {
+  if(activeStatusFilter === "All") { 
+    dispatch(clearFilter())
+  }else {
+    console.log(activeStatusFilter)
+    dispatch(filterByStatus(activeStatusFilter));
+  }
+},[activeStatusFilter])
+
+//  filter by member name
+ useEffect(()=>{
+  console.log(activeMemberFilter)
+  if(activeMemberFilter === "All") { 
+    dispatch(clearFilter())
+  } else {
+    dispatch(filterByName(activeMemberFilter.toLocaleLowerCase()));
+  }
+ },[activeMemberFilter])
   
 
   const getStatusColor = (status: string) => {
@@ -58,17 +90,17 @@ const TasksPage: React.FC = () => {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesStatus =
-      activeStatusFilter === "All" || task.status === activeStatusFilter;
-    const matchesMember = activeMemberFilter === "All";
-    const matchesProject = activeProjectFilter === "All";
+  // const filteredTasks = tasks.filter((task) => {
+  //   const matchesStatus =
+  //     activeStatusFilter === "All" || task.status === activeStatusFilter;
+  //   const matchesMember = activeMemberFilter === "All";
+  //   const matchesProject = activeProjectFilter === "All";
 
-    const matchesSearch = task.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesMember && matchesProject && matchesSearch;
-  });
+  //   const matchesSearch = task.title
+  //     .toLowerCase()
+  //     .includes(searchTerm.toLowerCase());
+  //   return matchesStatus && matchesMember && matchesProject && matchesSearch;
+  // });
 
   // const statusCounts = {
   //   All: tasks.length,
@@ -129,8 +161,7 @@ const TasksPage: React.FC = () => {
                           : "text-gray-600 hover:bg-gray-100"
                       }`}
                     >
-                      abcsed
-                      {/* {status} ({statusCounts[status]}) */}
+                      {status} 
                     </button>
                   )
                 )}
@@ -147,12 +178,12 @@ const TasksPage: React.FC = () => {
                 <div className="relative">
                   <select
                     value={activeMemberFilter}
-                    onChange={(e) => setFiltertasks(e)}
+                    onChange={(e) => setActiveMemberFilter(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
                   >
                     <option value="All">All Members</option>
                     {users?.map((member) => (
-                      <option key={member.id} value={member.id}>
+                      <option key={member.id} value={member.name}>
                         {member.name}
                       </option>
                     ))}
@@ -174,7 +205,7 @@ const TasksPage: React.FC = () => {
                   >
                     <option value="All">All Projects</option>
                     {projects.map((project) => (
-                      <option key={project.id} value={project.id}>
+                      <option key={project.id} value={project.name}>
                         {project.name}
                       </option>
                     ))}
@@ -200,7 +231,7 @@ const TasksPage: React.FC = () => {
 
             {/* Table Body */}
             <div className="divide-y divide-gray-200">
-              {filteredTasks?.map((task , index) => (
+              {filterTasks?.map((task , index) => (
                 <div
                   key={task.id}
                   className="px-6 py-4 hover:bg-gray-50 transition-colors"
@@ -242,7 +273,7 @@ const TasksPage: React.FC = () => {
                           </div>
                         )} */}
 
-                              {tasks[index].assignedUser}
+                              {filterTasks[index].assignedUser}
                     
                     </div>
 
@@ -270,12 +301,12 @@ const TasksPage: React.FC = () => {
                     <div className="col-span-2">
                       <div
                         className={`flex items-center space-x-2 text-sm ${
-                          isOverdue(task.dueDate)
+                          isOverdue(filterTasks.dueDate)
                             ? "text-red-600"
                             : "text-gray-600"
                         }`}
                       >
-                        {isOverdue(task.dueDate) ? (
+                        {isOverdue(filterTasks.dueDate) ? (
                           <AlertCircle className="w-4 h-4" />
                         ) : (
                           <Calendar className="w-4 h-4" />

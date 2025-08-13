@@ -36,7 +36,7 @@ const ProfileImageUpload= ({ setDetails } : propType) => {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-       setDetails((prevState : any) => ({ ...prevState, [e.target.name]: e.target.value}))
+       setDetails((prevState : any) => ({ ...prevState, profileImage: file}))
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
         reader.onload = (e) => setPreview(e.target?.result as string);
