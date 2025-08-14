@@ -139,7 +139,7 @@ const CreateTask = ({setShowCreateModal ,users , projects } : propType) => {
                         <p className="text-sm font-medium text-gray-900">
                           {member.name}
                         </p>
-                        <p className="text-xs text-gray-500">{member.role}</p>
+                        <span className="text-xs text-gray-500">{member.department}</span>
                       </div>
                     </label>
                   ))}

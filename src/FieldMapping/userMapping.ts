@@ -6,7 +6,10 @@ export const userMapping = (user : any) : UserType[] =>{
         role : item.role , 
         email : item.email , 
         tasks : item.tasks ,
-        projects : item.projects
+        projects : item.projects,
+        phone : item.phone,
+        department : item.Department,
+        JoinedDate: item.createdAt
     }))
 }
 
@@ -18,6 +21,9 @@ export const SingleuserMapping = (item : any) : UserType =>{
         role : item.role , 
         email : item.email , 
         tasks : item.tasks ,
-        projects : item.projects
+        projects : item.projects,
+        phone : item.phone,
+        department : item.Department,
+        JoinedDate: item.createdAt
     })
 }

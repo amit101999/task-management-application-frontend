@@ -7,12 +7,6 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../redux/store';
 
 // Sample data for charts
-const taskStatusData = [
-  { name: 'Completed', value: 45, color: '#10b981' },
-  { name: 'In Progress', value: 30, color: '#3b82f6' },
-  { name: 'Pending', value: 15, color: '#f59e0b' },
-  { name: 'Blocked', value: 10, color: '#ef4444' }
-];
 
 const weeklyProgressData = [
   { day: 'Mon', completed: 12, inProgress: 8 },
@@ -31,13 +25,24 @@ const AdminDashboard = () => {
   
   const { projects } = useSelector((store: RootState) => store.projects);
   const { tasks } = useSelector((store: RootState) => store.tasks);
+
+  const openTasks = tasks.filter(task => task.status === 'OPEN');
+  const inProgressTasks = tasks.filter(task => task.status === 'INPROGRESS');
+  const closedTasks = tasks.filter(task => task.status === 'CLOSED');
+
+  const taskStatusData = [
+  { name: 'Open', value: openTasks.length, color: '#10b981' },
+  { name: 'In Progress', value: inProgressTasks.length, color: '#3b82f6' },
+  { name: 'completed', value: closedTasks.length, color: '#f59e0b' },
+  // { name: 'Blocked', value: 10, color: '#ef4444' }
+];
   
 
   const overviewCards = [
     { title: 'Total Projects', value: projects.length , change: '+12%', color: 'bg-blue-50 border-blue-200' },
     { title: 'Total Members', value: tasks.length, change: '+8%', color: 'bg-green-50 border-green-200' },
-    { title: 'Tasks In Progress', value: '89', change: '+5%', color: 'bg-yellow-50 border-yellow-200' },
-    { title: 'Completed Tasks', value: '342', change: '+23%', color: 'bg-purple-50 border-purple-200' }
+    { title: 'Tasks In Progress', value: inProgressTasks.length, change: '+5%', color: 'bg-yellow-50 border-yellow-200' },
+    { title: 'Completed Tasks', value: closedTasks.length, change: '+23%', color: 'bg-purple-50 border-purple-200' }
   ];
 
 
@@ -99,7 +104,7 @@ const AdminDashboard = () => {
                 {taskStatusData.map((item, index) => (
                   <div key={index} className="flex items-center">
                     <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
-                    <span className="text-sm text-gray-600">{item.name}: {item.value}</span>
+                    <span className="text-sm text-gray-600">{item.name} : {item.value} </span>
                   </div>
                 ))}
               </div>

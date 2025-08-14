@@ -4,6 +4,8 @@ import OverviewCard from "../../sharedComponents/Member/Cards";
 
 const MemberDashboard: React.FC = () => {
 
+  // const { tasks } = useSelector((state: RootState) => state.tasks);
+
   // Sample data
   const taskStats: TaskStats = {
     total: 24,

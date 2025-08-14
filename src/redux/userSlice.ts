@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
 interface AuthType {
   users: UserType[];
   user: UserType | null;
@@ -48,9 +47,15 @@ export const userSlice = createSlice({
     },
     filterUser: (state, action: PayloadAction<string>) => {
       state.filteredUser = state.users.filter((item) => item.name.toLowerCase().includes(action.payload.toLowerCase()));
+    },
+    filterUserByDepartment : (state, action: PayloadAction<string>) => {
+      state.filteredUser = state.users.filter((item) => item.department?.toLowerCase() === action.payload.toLowerCase());
+    },
+    clearFilter : (state) => {
+      state.filteredUser = state.users
     }
   }
 });
 
-export const { loginFailure, loginStart, loginSuccess, logoutUser, loadUser, filterUser } = userSlice.actions;
+export const { loginFailure, loginStart, loginSuccess, logoutUser, loadUser, filterUser , filterUserByDepartment, clearFilter } = userSlice.actions;
 export default userSlice.reducer;

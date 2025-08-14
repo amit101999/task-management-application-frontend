@@ -28,6 +28,10 @@ interface UserType {
   password? : string ,
   tasks : UserTask[] ,
   projects : ProjectType[]
+  phone? : number
+  lastLogin? :Date
+  department? : string
+  JoinedDate? : Date
 }
 
 interface UserTask{
@@ -58,7 +62,7 @@ interface Task {
   id?: string
   title: string;
   assignedUser: string
-  status: "OPEN" | "INPROGRESS" | "COLSED";
+  status: "OPEN" | "INPROGRESS" | "CLOSED";
   dueDate: Date;
   projectName: string;
   priority: "High" | "Medium" | "Low";

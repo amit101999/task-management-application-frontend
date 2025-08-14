@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+  import React, { useEffect, useState } from 'react';
 import { Search, Plus, Mail, MoreHorizontal, Filter, User, Crown, Shield, Users } from 'lucide-react';
 import SideBar from '../../sharedComponents/Admin/SideBar';
 import Header from '../../sharedComponents/Admin/Header';
@@ -6,7 +6,7 @@ import { UsefetchUsers } from '../../hooks/hookUsers';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../redux/store';
 import { useDispatch } from 'react-redux';
-import { filterUser } from '../../redux/userSlice';
+import { clearFilter, filterUser, filterUserByDepartment } from '../../redux/userSlice';
 
 
 
@@ -22,18 +22,26 @@ const MembersPage = () => {
 
   useEffect(() => {
     dispatch(filterUser(searchQuery))
-    console.log(searchQuery, " : ", filteredUser)
   }, [searchQuery])
+
+  useEffect(()=>{
+    if(selectedRole === 'All'){
+      dispatch(clearFilter())
+    }else{
+      console.log('all')
+      dispatch(filterUserByDepartment(selectedRole))
+    }
+  },[selectedRole])
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case 'Admin':
+      case 'DEVELOPER':
         return <Crown className="w-4 h-4 text-amber-600" />;
-      case 'Manager':
+      case 'DESIGNER':
         return <Shield className="w-4 h-4 text-blue-600" />;
-      case 'Developer':
+      case 'TESTER':
         return <User className="w-4 h-4 text-green-600" />;
-      case 'Designer':
+      case 'DEVOPS':
         return <User className="w-4 h-4 text-purple-600" />;
       default:
         return <User className="w-4 h-4 text-gray-600" />;
@@ -103,8 +111,8 @@ const MembersPage = () => {
                   className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="All">All Roles</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Manager">Manager</option>
+                  <option value="Tester">Tester</option>
+                  <option value="Devops">Devops</option>
                   <option value="Developer">Developer</option>
                   <option value="Designer">Designer</option>
                 </select>
@@ -153,8 +161,8 @@ const MembersPage = () => {
                         </td>
                         <td className="py-4 px-6">
                           <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${getRoleColor(member.role)}`}>
-                            {getRoleIcon(member.role)}
-                            {member.role}
+                            {getRoleIcon(member?.department)}
+                            {member?.department}
                           </div>
                         </td>
                         <td className="py-4 px-6">

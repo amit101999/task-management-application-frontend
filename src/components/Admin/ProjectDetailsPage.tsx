@@ -11,9 +11,6 @@ import {
   CheckCircle,
   AlertCircle,
   PauseCircle,
-  MoreHorizontal,
-  TrendingUp,
-  Activity
 } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer } from 'recharts';
 import SideBar from '../../sharedComponents/Admin/SideBar';
@@ -23,23 +20,6 @@ import { useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { selectprojectById } from '../../redux/projectSlice';
 import { taskMapping } from '../../FieldMapping/taskMapping';
-
-interface TeamMember {
-  id: string;
-  name: string;
-  role: string;
-  avatar: string;
-  tasksAssigned: number;
-  isOnline: boolean;
-}
-
-interface Task {
-  id: string;
-  name: string;
-  status: 'todo' | 'in-progress' | 'completed';
-  assignee: string;
-  dueDate: string;
-}
 
 interface Document {
   id: string;
@@ -146,15 +126,21 @@ export default function ProjectDetailsPage() {
   const dispatch = useDispatch();
   const params = useParams<{ id: string }>();
 
-  dispatch(selectprojectById(params.id || ""));
+  useEffect(() => {
+  if (params.id) {
+    dispatch(selectprojectById(params.id));
+  }
+}, [dispatch, params.id]);
 
   const { selectedProjectId } = useSelector((store: RootState) => store.projects)
-  console.log(selectedProjectId)
-
   const teamMembers = selectedProjectId?.teamMembers
-
   const tasks = taskMapping(selectedProjectId?.tasks);
-  console.log(tasks);
+  
+  const completedtask = tasks?.filter((task : Task) => task.status === "CLOSED")
+  const inProgressTask = tasks?.filter((task : Task) => task.status === "INPROGRESS")
+  const openTask = tasks?.filter((task : Task) => task.status === "OPEN")
+  
+  const progress = (completedtask.length/tasks.length) * 100
 
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([
@@ -174,21 +160,6 @@ export default function ProjectDetailsPage() {
     }
   ]);
 
-  //   const teamMembers: TeamMember[] = [
-  //     { id: '1', name: 'Sarah Chen', role: 'Project Manager', avatar: 'SC', tasksAssigned: 8, isOnline: true },
-  //     { id: '2', name: 'Mike Johnson', role: 'Full Stack Developer', avatar: 'MJ', tasksAssigned: 12, isOnline: true },
-  //     { id: '3', name: 'Emily Rodriguez', role: 'UI/UX Designer', avatar: 'ER', tasksAssigned: 6, isOnline: false },
-  //     { id: '4', name: 'Alex Kim', role: 'Backend Developer', avatar: 'AK', tasksAssigned: 10, isOnline: true },
-  //     { id: '5', name: 'David Park', role: 'QA Engineer', avatar: 'DP', tasksAssigned: 7, isOnline: false }
-  //   ];
-
-  //   const tasks: Task[] = [
-  //     { id: '1', name: 'User Authentication System', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 15' },
-  //     { id: '2', name: 'Product Catalog UI', status: 'in-progress', assignee: 'Emily Rodriguez', dueDate: 'Mar 22' },
-  //     { id: '3', name: 'Payment Integration', status: 'in-progress', assignee: 'Alex Kim', dueDate: 'Mar 25' },
-  //     { id: '4', name: 'Shopping Cart Logic', status: 'completed', assignee: 'Mike Johnson', dueDate: 'Mar 10' },
-  //     { id: '5', name: 'Mobile Responsive Design', status: 'todo', assignee: 'Emily Rodriguez', dueDate: 'Mar 30' }
-  //   ];
 
   const documents: Document[] = [
     { id: '1', name: 'Project Requirements.pdf', type: 'pdf', size: '2.4 MB', uploadDate: '2 days ago' },
@@ -205,12 +176,12 @@ export default function ProjectDetailsPage() {
   ];
 
   const taskStatusData = [
-    { name: 'Completed', value: 2, color: '#10B981' },
-    { name: 'In Progress', value: 2, color: '#F59E0B' },
-    { name: 'Todo', value: 1, color: '#6B7280' }
+    { name: 'Completed', value: completedtask.length, color: '#10B981' },
+    { name: 'In Progress', value: inProgressTask.length, color: '#F59E0B' },
+    { name: 'Open', value: openTask.length, color: '#6B7280' }
   ];
 
-  const memberTaskData = teamMembers.map(member => ({
+  const memberTaskData = teamMembers?.map(member => ({
     name: member.name.split(' ')[0],
     tasks: member.tasksAssigned || 0
   }));
@@ -251,13 +222,10 @@ export default function ProjectDetailsPage() {
     }
   };
 
-  const getUser = (id: string): string => {
-    const item = teamMembers?.filter((item) => {
-      if (item.id === id) return item
-    })
-    console.log(item[0].name)
-    return item[0].name
-  }
+ const getUser = (id: string): string => {
+  const user = teamMembers?.find(member => member.id === id);
+  return user?.name || 'Unknown User';
+}
 
   const getStatusBadge = (status: string) => {
     const styles = {
@@ -302,9 +270,9 @@ export default function ProjectDetailsPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="font-medium text-gray-700">Progress</span>
-              <span className="text-gray-600">{selectedProjectId?.progress}%</span>
+              <span className="text-gray-600">{progress.toFixed(2)}%</span>
             </div>
-            <ProgressBar progress={selectedProjectId?.progress} />
+            <ProgressBar progress={progress} />
           </div>
         </div>
 

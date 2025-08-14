@@ -8,8 +8,9 @@ export const UsefetchUsers = () => {
         const disptach = useDispatch()
     useEffect(()=>{
        const loadUsers = async () => {
-            const task = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/getAllUsers` , {withCredentials : true} )
-            const data = userMapping(task.data.data)
+            const user = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/getAllUsers` , {withCredentials : true} )
+            const data = userMapping(user.data.data)
+            // console.log(data)
             disptach(loadUser(data))
        }
        loadUsers()
